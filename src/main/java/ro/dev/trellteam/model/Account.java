@@ -18,16 +18,33 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "first_name")
     private String username;
+    @Column(name = "email")
     private String email;
+    @Column(name = "password")
     private String password;
+    @Column(name = "name")
     private String name;
+    @Column(name = "date_created")
     private Date dateCreated;
+
+    @OneToOne(
+            targetEntity = ro.dev.trellteam.model.Employee.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.LAZY
+    )
+    @JoinTable(
+            name = "te_tr_acc_emp_link",
+            joinColumns = @JoinColumn(name = "id_acc"),
+            inverseJoinColumns = @JoinColumn(name = "id_emp")
+    )
+    private Employee employee;
 
     @ManyToMany(
             targetEntity = ro.dev.trellteam.model.Role.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @JoinTable(
             name = "te_tr_acc_role_link",
@@ -37,7 +54,7 @@ public class Account {
     private List<Role> roles;
 
     public void addRole(Role role) {
-        if(roles.isEmpty()) {
+        if(roles == null) {
             roles = new ArrayList<>();
         }
         roles.add(role);
