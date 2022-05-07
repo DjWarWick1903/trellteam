@@ -27,8 +27,18 @@ public class Card {
     private String notes;
     @Column(name = "idSwimlane")
     private Long idSwimlane;
+    @ManyToOne(
+            targetEntity = ro.dev.trellteam.model.Account.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
     @JoinColumn(name = "id_publisher")
     private Account idPublisher;
+    @ManyToOne(
+            targetEntity = ro.dev.trellteam.model.Account.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
     @JoinColumn(name = "id_asigned")
     private Account idAssigned;
 }

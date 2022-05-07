@@ -37,8 +37,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/security/login"); //override the original /login path
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/security/login/**", "/security/token/refresh", "/security/register").permitAll(); // we can do this if we do not want security in a particular api - in this case spring already did this for /login
-        http.authorizeRequests().antMatchers(GET, "/security/account/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().antMatchers("/security/login/**", "/security/token/refresh", "/security/account/register").permitAll(); // we can do this if we do not want security in a particular api - in this case spring already did this for /login
+        http.authorizeRequests().antMatchers("/security/account/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests().antMatchers("/security/role/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);

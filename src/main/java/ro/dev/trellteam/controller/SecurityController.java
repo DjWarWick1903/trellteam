@@ -30,16 +30,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
 @RequestMapping(value = "/security", produces = APPLICATION_JSON_VALUE)
 public class SecurityController {
-    private static final Logger logger = LoggerFactory.getLogger(SecurityController.class);
     private final AccountService accountService;
     private final RoleService roleService;
 
-    @GetMapping("/account")
+    @GetMapping("/account/all")
     public ResponseEntity<List<Account>> getAccounts() {
         return ResponseEntity.ok().body(accountService.list());
+    }
+
+    @GetMapping("/account")
+    public ResponseEntity<Account> getAccount(@RequestBody Map<String, String> payload) {
+        final String username = payload.get("username");
+        return ResponseEntity.ok().body(accountService.getAccount(username));
     }
 
     @PostMapping("/account")
@@ -57,7 +61,7 @@ public class SecurityController {
     }
 
     //pathvariable
-    @PostMapping("/account/role")
+    @PutMapping ("/account/role")
     public ResponseEntity<Account> addRoleToAccount(@RequestBody RoleToUserForm form) {
         final Role role = roleService.findById(form.getRoleID());
         Account account = accountService.getAccount(form.getUsername());
@@ -74,6 +78,12 @@ public class SecurityController {
     public ResponseEntity<Role> createRole(@RequestBody Role role) {
         final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/role").toUriString());
         return ResponseEntity.created(uri).body(roleService.save(role));
+    }
+
+    @DeleteMapping("/role")
+    public void deleteRole(@RequestBody Map<String, Object> payload) {
+        final Long idRole = (Long) payload.get("id");
+        roleService.deleteRoleById(idRole);
     }
 
     @GetMapping("/token/refresh")

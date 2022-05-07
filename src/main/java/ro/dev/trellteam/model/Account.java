@@ -18,7 +18,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "first_name")
+    @Column(name = "username")
     private String username;
     @Column(name = "email")
     private String email;
@@ -28,6 +28,8 @@ public class Account {
     private String name;
     @Column(name = "date_created")
     private Date dateCreated;
+    @Column(name = "disabled")
+    private Integer disabled;
 
     @OneToOne(
             targetEntity = ro.dev.trellteam.model.Employee.class,
