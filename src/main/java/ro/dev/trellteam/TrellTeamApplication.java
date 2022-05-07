@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@CrossOrigin(origins = "", allowedHeaders = "")
+//@CrossOrigin(origins = "*")
 public class TrellTeamApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TrellTeamApplication.class, args);
@@ -20,4 +20,17 @@ public class TrellTeamApplication {
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
+
+	/*@Bean
+	public WebMvcConfigurer corsConfigurer() {
+		return new WebMvcConfigurer() {
+			@Override
+			public void addCorsMappings(CorsRegistry registry) {
+				//registry.addMapping("/security/login").allowedOrigins("http://localhost:63342/trellteam-fe");
+				registry.addMapping("/*")
+						.allowedHeaders("")
+						.allowedOrigins("");
+			}
+		};
+	}*/
 }

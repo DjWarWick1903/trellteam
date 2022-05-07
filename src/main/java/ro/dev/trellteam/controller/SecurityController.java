@@ -31,9 +31,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/security", produces = APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "", allowedHeaders = "")
 public class SecurityController {
     private final AccountService accountService;
     private final RoleService roleService;
+
+    @GetMapping("/login/test")
+    public ResponseEntity<String> getTest() {
+        return ResponseEntity.ok().body("Test is ok");
+    }
 
     @GetMapping("/account/all")
     public ResponseEntity<List<Account>> getAccounts() {
