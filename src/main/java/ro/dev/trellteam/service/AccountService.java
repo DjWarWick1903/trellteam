@@ -2,7 +2,6 @@ package ro.dev.trellteam.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +15,6 @@ import ro.dev.trellteam.repository.AccountRepository;
 import ro.dev.trellteam.repository.RoleRepository;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,10 +48,16 @@ public class AccountService implements UserDetailsService {
      * @param account
      * @return Account
      */
-    public Account saveAccount(Account account) {
+    public Account save(Account account) {
         log.info("AccountService--Saving new account {} to the database", account.getUsername());
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accRepo.save(account);
+    }
+
+    public Account saveAndFlush(Account account) {
+        log.info("AccountService--Saving new account {} to the database", account.getUsername());
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        return accRepo.saveAndFlush(account);
     }
 
     /**

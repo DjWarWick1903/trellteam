@@ -24,8 +24,6 @@ public class Account {
     private String email;
     @Column(name = "password")
     private String password;
-    @Column(name = "name")
-    private String name;
     @Column(name = "date_created")
     private Date dateCreated;
     @Column(name = "disabled")
@@ -34,7 +32,7 @@ public class Account {
     @OneToOne(
             targetEntity = ro.dev.trellteam.model.Employee.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "te_tr_acc_emp_link",
@@ -46,7 +44,7 @@ public class Account {
     @ManyToMany(
             targetEntity = ro.dev.trellteam.model.Role.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @JoinTable(
             name = "te_tr_acc_role_link",

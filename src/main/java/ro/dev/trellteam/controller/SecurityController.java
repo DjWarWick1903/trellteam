@@ -5,16 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.dev.trellteam.helper.SecurityHelper;
-import ro.dev.trellteam.model.Account;
-import ro.dev.trellteam.model.Role;
-import ro.dev.trellteam.service.AccountService;
-import ro.dev.trellteam.service.RoleService;
+import ro.dev.trellteam.model.*;
+import ro.dev.trellteam.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,14 +28,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @RequestMapping(value = "/security", produces = APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@Slf4j
 public class SecurityController {
+    private final TransactionalOperations transactionalOperations;
     private final AccountService accountService;
     private final RoleService roleService;
-
-    @GetMapping("/login/test")
-    public ResponseEntity<String> getTest() {
-        return ResponseEntity.ok().body("Test is ok");
-    }
+    private final OrganisationService organisationService;
+    private final DepartmentService departmentService;
+    private final EmployeeService employeeService;
 
     @GetMapping("/account/all")
     public ResponseEntity<List<Account>> getAccounts() {
@@ -55,15 +51,40 @@ public class SecurityController {
     @PostMapping("/account")
     public ResponseEntity<Account> createAccount(@RequestBody Account account) {
         final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account").toUriString());
-        return ResponseEntity.created(uri).body(accountService.saveAccount(account));
+        return ResponseEntity.created(uri).body(accountService.save(account));
     }
 
-    @PostMapping("/account/register")
-    public ResponseEntity<Account> registerAdminAccount(@RequestBody Account account) {
-        final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account/register").toUriString());
+    @PostMapping("/organisation/register")
+    public ResponseEntity<?> registerOrganisation(@RequestBody Map<String, Object> payload) {
+        log.debug("SecurityController--registerOrganisation--IN");
+        log.debug("SecurityController--registerOrganisation--payload: {}", payload.toString());
+
+        final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account").toUriString());
+        log.debug("SecurityController--registerOrganisation--uri: {}", uri);
+
+        try {
+            final Map<String, String> organisationData = (Map) payload.get("organisation");
+            final String departmentName = (String) payload.get("depName");
+            final Map<String, String> employeeData = (Map) payload.get("employee");
+            final Map<String, String> accountData = (Map) payload.get("account");
+
+            Organisation organisation = SecurityHelper.getOrganisationFromMap(organisationData);
+            Employee employee = SecurityHelper.getEmployeeFromMap(employeeData);
+            Account account = SecurityHelper.getAccountFromMap(accountData);
+            Department department = new Department(null, departmentName, null, null);
+
+            transactionalOperations.createOrganisationRepository(organisation, department, employee, account);
+        } catch(final Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+        final String message = "Organisation repository created succesfully.";
+        return ResponseEntity.created(uri).body(message);
+        /*final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account/register").toUriString());
         final Role role = roleService.findByName("ADMIN");
         account.addRole(role);
-        return ResponseEntity.created(uri).body(accountService.saveAccount(account));
+        return ResponseEntity.created(uri).body(accountService.saveAccount(account));*/
     }
 
     //pathvariable
@@ -72,7 +93,7 @@ public class SecurityController {
         final Role role = roleService.findById(form.getRoleID());
         Account account = accountService.getAccount(form.getUsername());
         account.addRole(role);
-        return ResponseEntity.ok().body(accountService.saveAccount(account));
+        return ResponseEntity.ok().body(accountService.save(account));
     }
 
     @GetMapping("/role")

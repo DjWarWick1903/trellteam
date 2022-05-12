@@ -63,4 +63,13 @@ public class RoleService {
         log.info("RoleService--Deleting role {} from the database" , name);
         roleRepository.deleteByName(name);
     }
+
+    /**
+     * Method used to delete a role from the database starting from it's ID.
+     * @param id
+     */
+    public void deleteRoleById(Long id) {
+        log.info("RoleService--Deleting role {} from the databse", id);
+        roleRepository.deleteById(id);
+    }
 }

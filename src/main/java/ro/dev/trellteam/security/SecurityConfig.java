@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/security/login/**", "/security/token/refresh", "/security/account/register").permitAll(); // we can do this if we do not want security in a particular api - in this case spring already did this for /login
+        http.authorizeRequests().antMatchers("/security/login/**", "/security/token/refresh", "/security/organisation/register").permitAll(); // we can do this if we do not want security in a particular api - in this case spring already did this for /login
         http.authorizeRequests().antMatchers("/security/account/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().antMatchers("/security/role/**").hasAnyAuthority("ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:63342"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:63343"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "UPDATE"));
         // setAllowCredentials(true) is important, otherwise:
         // The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'.

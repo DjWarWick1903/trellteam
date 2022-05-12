@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,16 +26,23 @@ public class Organisation {
     private String CUI;
     @Column(name = "date_created")
     private Date dateCreated;
+    @Column(name = "domain")
+    private String domain;
 
     @OneToMany(
             targetEntity = ro.dev.trellteam.model.Department.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @JoinTable(
-            name = "te_tr_department",
+            name = "te_tr_org_dep_link",
             joinColumns = @JoinColumn(name = "id_org"),
-            inverseJoinColumns = @JoinColumn(name = "id")
+            inverseJoinColumns = @JoinColumn(name = "id_dep")
     )
     private List<Department> departments;
+
+    public void addDepartment(Department department) {
+        if(departments == null) departments = new ArrayList<>();
+        departments.add(department);
+    }
 }

@@ -42,6 +42,6 @@ public class AccountUnitTest {
 
         Account account = accountService.getAccount("robertpop");
         account.setRoles(roles);
-        accountService.saveAccount(account);
+        accountService.save(account);
     }
 }
