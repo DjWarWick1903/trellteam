@@ -22,8 +22,26 @@ public class OrganisationService {
      * @return Organisation
      */
     public Organisation findByName(final String name) {
-        log.debug("OrganisationService--Fetching organisation for name {}" , name);
-        return organisationRepository.findByName(name);
+        log.debug("OrganisationService--findByName--IN");
+        log.debug("OrganisationService--findByName--name: {}", name);
+        final Organisation organisation = organisationRepository.findByName(name);
+        log.debug("OrganisationService--findByName--organisation: {}", organisation);
+        log.debug("OrganisationService--findByName--OUT");
+        return organisation;
+    }
+
+    /**
+     * Method used to retrieve an organisation based on a department's id.
+     * @param id
+     * @return Organisation
+     */
+    public Organisation findByDepartmentId(final Long id) {
+        log.debug("OrganisationService--findByDepartmentId--IN");
+        log.debug("OrganisationService--findByDepartmentId--id: {}", id);
+        final Organisation organisation = organisationRepository.findByDepartmentId(id);
+        log.debug("OrganisationService--findByDepartmentId--organisation: {}", organisation);
+        log.debug("OrganisationService--findByDepartmentId--OUT");
+        return organisation;
     }
 
     /**
@@ -32,8 +50,13 @@ public class OrganisationService {
      * @return Organisation
      */
     public Organisation findById(final Long id) {
-        log.debug("OrganisationService--Fetching organisation for id {}" , id);
-        return organisationRepository.findById(id).get();
+        log.debug("OrganisationService--findById--IN");
+        log.debug("OrganisationService--findById--id: {}", id);
+        final Organisation organisation = organisationRepository.findById(id).get();
+        log.debug("OrganisationService--findById--organisation: {}", organisation);
+        log.debug("OrganisationService--findById--OUT");
+
+        return organisation;
     }
 
     /**
@@ -41,14 +64,12 @@ public class OrganisationService {
      * @param organisation
      * @return Organisation
      */
-    public Organisation save(final Organisation organisation) {
-        log.debug("OrganisationService--Saving organisation");
-        return  organisationRepository.save(organisation);
-    }
+    public Organisation save(Organisation organisation) {
+        log.debug("OrganisationService--save--IN");
+        organisation = organisationRepository.save(organisation);
+        log.debug("OrganisationService--save--OUT");
 
-    public Organisation saveAndFlush(final Organisation organisation) {
-        log.debug("OrganisationService--Saving organisation");
-        return  organisationRepository.saveAndFlush(organisation);
+        return organisation;
     }
 
     /**
@@ -56,7 +77,9 @@ public class OrganisationService {
      * @param id
      */
     public void deleteById(final Long id) {
-        log.debug("OrganisationService--Deleting organisation with id {}", id);
+        log.debug("OrganisationService--deleteById--IN");
+        log.debug("OrganisationService--deleteById--id: {}", id);
         organisationRepository.deleteById(id);
+        log.debug("OrganisationService--deleteById--OUT");
     }
 }

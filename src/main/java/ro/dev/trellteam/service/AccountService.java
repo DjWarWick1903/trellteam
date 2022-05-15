@@ -49,15 +49,21 @@ public class AccountService implements UserDetailsService {
      * @return Account
      */
     public Account save(Account account) {
-        log.info("AccountService--Saving new account {} to the database", account.getUsername());
+        log.info("AccountService--save--IN");
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        return accRepo.save(account);
+        account = accRepo.save(account);
+        log.info("AccountService--save--OUT");
+
+        return account;
     }
 
     public Account saveAndFlush(Account account) {
-        log.info("AccountService--Saving new account {} to the database", account.getUsername());
+        log.info("AccountService--saveAndFlush--IN");
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        return accRepo.saveAndFlush(account);
+        account = accRepo.saveAndFlush(account);
+        log.info("AccountService--saveAndFlush--OUT");
+
+        return account;
     }
 
     /**
@@ -66,10 +72,13 @@ public class AccountService implements UserDetailsService {
      * @param roleName
      */
     public void addRoleToAccount(final String username, final String roleName) {
-        log.info("AccountService--Adding role {} to account {}", roleName, username);
+        log.info("AccountService--addRoleToAccount--IN");
+        log.info("AccountService--addRoleToAccount--roleName: {}", roleName);
+        log.info("AccountService--addRoleToAccount--username: {}", username);
         Account account = accRepo.findByUsername(username);
         final Role role = roleRepository.findByName(roleName);
         account.getRoles().add(role); //because we have the transactional annot, once the method finishes it will save into db
+        log.info("AccountService--addRoleToAccount--OUT");
     }
 
     /**
@@ -78,8 +87,11 @@ public class AccountService implements UserDetailsService {
      * @return Account
      */
     public Account getAccount(final String username) {
-        log.info("AccountService--Fetching account {}" , username);
-        return accRepo.findByUsername(username);
+        log.info("AccountService--getAccount--IN");
+        log.info("AccountService--getAccount--username: {}", username);
+        final Account account = accRepo.findByUsername(username);
+        log.info("AccountService--getAccount--OUT");
+        return account;
     }
 
     /**
@@ -87,7 +99,7 @@ public class AccountService implements UserDetailsService {
      * @return List
      */
     public List<Account> list() {
-        log.info("AccountService--Fetching all accounts");
+        log.info("AccountService--list--IN");
         return accRepo.findAll();
     }
 
@@ -96,7 +108,9 @@ public class AccountService implements UserDetailsService {
      * @param account
      */
     public void delete(Account account) {
-        log.info("AccountService--Deleting account {}" , account.getUsername());
+        log.info("AccountService--delete--IN");
+        log.info("AccountService--delete--username: {}" , account.getUsername());
         accRepo.deleteById(account.getId());
+        log.info("AccountService--delete--OUT");
     }
 }

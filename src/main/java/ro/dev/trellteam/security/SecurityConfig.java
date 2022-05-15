@@ -14,12 +14,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ro.dev.trellteam.helper.SecurityHelper;
 import ro.dev.trellteam.security.filter.CustomAuthenticationFilter;
 import ro.dev.trellteam.security.filter.CustomAuthorizationFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -45,9 +47,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.cors();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/security/login/**", "/security/token/refresh", "/security/organisation/register").permitAll(); // we can do this if we do not want security in a particular api - in this case spring already did this for /login
-        http.authorizeRequests().antMatchers("/security/account/**").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().antMatchers("/security/role/**").hasAnyAuthority("ADMIN");
+
+        final Map<String, String[]> endpointPrivileges = SecurityHelper.getEndpointPrivileges();
+        for(final String endpoint : endpointPrivileges.keySet()) {
+            final String[] privileges = endpointPrivileges.get(endpoint);
+            if("ALL".equals(privileges[0])) {
+                // we can do this if we do not want security in a particular api - in this case spring already did this for /login
+                http.authorizeRequests().antMatchers(endpoint).permitAll();
+                continue;
+            }
+            http.authorizeRequests().antMatchers(endpoint).hasAnyAuthority(privileges);
+        }
+
+        //http.authorizeRequests().antMatchers("/security/account/**", "/user/main/**").hasAnyAuthority("ADMIN");
+
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

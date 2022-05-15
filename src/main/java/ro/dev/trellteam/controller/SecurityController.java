@@ -37,6 +37,11 @@ public class SecurityController {
     private final DepartmentService departmentService;
     private final EmployeeService employeeService;
 
+    @GetMapping("/ping")
+    public ResponseEntity<?> ping() {
+        return ResponseEntity.ok().body(null);
+    }
+
     @GetMapping("/account/all")
     public ResponseEntity<List<Account>> getAccounts() {
         return ResponseEntity.ok().body(accountService.list());

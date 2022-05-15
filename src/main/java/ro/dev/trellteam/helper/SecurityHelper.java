@@ -4,10 +4,13 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
 import ro.dev.trellteam.model.*;
 
 import java.text.ParseException;
@@ -21,6 +24,28 @@ import static java.util.Arrays.stream;
 public class SecurityHelper {
 
     private final static String SECRETKEY = "secret";
+    private final static int jwtExpirationMs = 3600000;
+    private final static int jwtRefreshExpirationMs = 86400000;
+
+    private static Map<String, String[]> endpointPrivileges;
+
+    static {
+        endpointPrivileges = new HashMap<>();
+
+        //permit all
+        endpointPrivileges.put("/security/login/**", new String[] {"ALL"});
+        endpointPrivileges.put("/security/token/refresh", new String[] {"ALL"});
+        endpointPrivileges.put("/security/organisation/register", new String[] {"ALL"});
+
+        //ADMIN only
+        endpointPrivileges.put("/security/account/**", new String[] {"ADMIN"});
+        endpointPrivileges.put("/security/role/**", new String[] {"ADMIN"});
+
+        endpointPrivileges.put("/security/ping", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/user/main/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+    }
+
+    public static Map<String, String[]> getEndpointPrivileges() { return endpointPrivileges; }
 
     /**
      * Method used to generate an JWT access token customized from a user and requestURL.
@@ -33,7 +58,7 @@ public class SecurityHelper {
         final Algorithm algorithm = Algorithm.HMAC256(SECRETKEY.getBytes());
         return JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .withIssuer(requestURL)
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -50,7 +75,7 @@ public class SecurityHelper {
         final Algorithm algorithm = Algorithm.HMAC256(SECRETKEY.getBytes());
         return JWT.create()
                 .withSubject(account.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .withIssuer(requestURL)
                 .withClaim("roles", account.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                 .sign(algorithm);
@@ -67,7 +92,7 @@ public class SecurityHelper {
         final Algorithm algorithm = Algorithm.HMAC256(SECRETKEY.getBytes());
         return JWT.create()
                 .withSubject(username)
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + jwtRefreshExpirationMs))
                 .withIssuer(requestURL)
                 .sign(algorithm);
     }
