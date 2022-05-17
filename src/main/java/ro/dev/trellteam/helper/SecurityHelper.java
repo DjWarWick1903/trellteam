@@ -41,6 +41,7 @@ public class SecurityHelper {
         endpointPrivileges.put("/security/account/**", new String[] {"ADMIN"});
         endpointPrivileges.put("/security/role/**", new String[] {"ADMIN"});
 
+        //Others
         endpointPrivileges.put("/security/ping", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
         endpointPrivileges.put("/user/main/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
     }

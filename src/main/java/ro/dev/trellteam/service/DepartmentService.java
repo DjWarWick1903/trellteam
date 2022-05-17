@@ -68,6 +68,7 @@ public class DepartmentService {
     public Department save(Department department) {
         log.debug("DepartmentService--save--IN");
         department = departmentRepository.save(department);
+        log.debug("DepartmentService--save--department: {}", department);
         log.debug("DepartmentService--save--OUT");
         return department;
     }

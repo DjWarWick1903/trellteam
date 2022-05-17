@@ -9,6 +9,7 @@ import ro.dev.trellteam.repository.DepartmentRepository;
 import ro.dev.trellteam.repository.EmployeeRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,13 +19,31 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     /**
+     * Method used to return a list of employees of an organisation.
+     * @param idOrg
+     * @return List<Employee>
+     */
+    public List<Employee> listOrganisationEmployees(final Long idOrg) {
+        log.debug("EmployeeService--listOrganisationEmployees--IN");
+        log.debug("EmployeeService--listOrganisationEmployees--idOrg: {}", idOrg);
+        final List<Employee> employees = employeeRepository.listOrganisationEmployees(idOrg);
+        log.debug("EmployeeService--listOrganisationEmployees--employees: {}", employees);
+        log.debug("EmployeeService--listOrganisationEmployees--OUT");
+        return employees;
+    }
+
+    /**
      * Method used to return the employee starting from a provided id.
      * @param id
      * @return Employee
      */
     public Employee findById(final Long id) {
-        log.debug("EmployeeService--Fetching department with id {}" , id);
-        return employeeRepository.findById(id).get();
+        log.debug("EmployeeService--findById--IN");
+        log.debug("EmployeeService--findById--id: {}", id);
+        final Employee employee = employeeRepository.findById(id).get();
+        log.debug("EmployeeService--findById--employee: {}", employee);
+        log.debug("EmployeeService--findById--OUT");
+        return employee;
     }
 
     /**
@@ -32,13 +51,16 @@ public class EmployeeService {
      * @param department
      * @return Employee
      */
-    public Employee save(final Employee employee) {
-        log.debug("EmployeeService--Saving department");
-        return employeeRepository.save(employee);
+    public Employee save(Employee employee) {
+        log.debug("EmployeeService--save--IN");
+        employee = employeeRepository.save(employee);
+        log.debug("EmployeeService--save--employee: {}", employee);
+        log.debug("EmployeeService--save--IN");
+        return employee;
     }
 
     public Employee saveAndFlush(final Employee employee) {
-        log.debug("EmployeeService--Saving department");
+        log.debug("EmployeeService--saveAndFlush--IN");
         return employeeRepository.saveAndFlush(employee);
     }
 
@@ -47,7 +69,9 @@ public class EmployeeService {
      * @param id
      */
     public void deleteById(final Long id) {
-        log.debug("EmployeeService--Deleting department with id {}", id);
+        log.debug("EmployeeService--deleteById--IN");
+        log.debug("EmployeeService--deleteById--id: {}", id);
         employeeRepository.deleteById(id);
+        log.debug("EmployeeService--deleteById--OUT");
     }
 }
