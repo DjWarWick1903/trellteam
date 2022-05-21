@@ -9,6 +9,7 @@ import ro.dev.trellteam.model.Organisation;
 import ro.dev.trellteam.repository.DepartmentRepository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,13 +37,13 @@ public class DepartmentService {
      * @param id
      * @return Department
      */
-    public Department findByEmployeeId(final Long id) {
+    public List<Department> findByEmployeeId(final Long id) {
         log.debug("DepartmentService--findByEmployeeId--IN");
         log.debug("DepartmentService--findByEmployeeId--id: {}" , id);
-        final Department department = departmentRepository.findByEmployeeId(id);
-        log.debug("DepartmentService--findByEmployeeId--department: {}" , department.toString());
+        final List<Department> departments = departmentRepository.findByEmployeeId(id);
+        log.debug("DepartmentService--findByEmployeeId--departments: {}" , departments);
         log.debug("DepartmentService--findByEmployeeId--OUT");
-        return department;
+        return departments;
     }
 
     /**

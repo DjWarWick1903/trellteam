@@ -22,8 +22,11 @@ public class RoleService {
      * @return List
      */
     public List<Role> list() {
-        log.info("RoleService--Fetching all roles...");
-        return roleRepository.findAll();
+        log.info("RoleService--list--IN");
+        final List<Role> roles = roleRepository.findAll();
+        log.info("RoleService--list--roles: {}", roles);
+        log.info("RoleService--list--OUT");
+        return roles;
     }
 
     /**
@@ -32,8 +35,12 @@ public class RoleService {
      * @return Role
      */
     public Role findByName(final String name) {
-        log.info("RoleService--Fetching role {}" , name);
-        return roleRepository.findByName(name);
+        log.info("RoleService--findByName--IN");
+        log.info("RoleService--findByName--name: {}", name);
+        final Role role = roleRepository.findByName(name);
+        log.info("RoleService--findByName--role: {}", role);
+        log.info("RoleService--findByName--OUT");
+        return role;
     }
 
     /**
@@ -42,7 +49,12 @@ public class RoleService {
      * @return
      */
     public Role findById(final Long id) {
-        return roleRepository.findById(id).get();
+        log.info("RoleService--findById--IN");
+        log.info("RoleService--findById--id: {}", id);
+        final Role role = roleRepository.findById(id).get();
+        log.info("RoleService--findById--role: {}", role);
+        log.info("RoleService--findById--OUT");
+        return role;
     }
 
     /**
@@ -51,17 +63,21 @@ public class RoleService {
      * @return Role
      */
     public Role save(Role role) {
-        log.info("RoleService--Adding role {} to the database" , role.getName());
-        return roleRepository.save(role);
+        log.info("RoleService--save--IN");
+        role = roleRepository.save(role);
+        log.info("RoleService--save--OUT");
+        return role;
     }
 
     /**
      * Method used to delete a role starting from it's name.
      * @param name
      */
-    public void deleteRoleByName(String name) {
-        log.info("RoleService--Deleting role {} from the database" , name);
+    public void deleteRoleByName(final String name) {
+        log.info("RoleService--deleteRoleByName--IN");
+        log.info("RoleService--deleteRoleByName--name: {}", name);
         roleRepository.deleteByName(name);
+        log.info("RoleService--deleteRoleByName--OUT");
     }
 
     /**
@@ -69,7 +85,9 @@ public class RoleService {
      * @param id
      */
     public void deleteRoleById(Long id) {
-        log.info("RoleService--Deleting role {} from the databse", id);
+        log.info("RoleService--deleteRoleById--IN");
+        log.info("RoleService--deleteRoleById--id: {}", id);
         roleRepository.deleteById(id);
+        log.info("RoleService--deleteRoleById--OUT");
     }
 }

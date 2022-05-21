@@ -41,4 +41,22 @@ public class TransactionalOperations {
 
         log.debug("TransactionalOperations--createOrganisationRepository--OUT");
     }
+
+    @Transactional
+    public void createEmployee(Account account, Employee employee, Department department) {
+        log.debug("TransactionalOperations--createEmployee--IN");
+
+        employee = employeeService.save(employee);
+
+        account.setEmployee(employee);
+        department.addEmployee(employee);
+
+        account = accountService.save(account);
+        department = departmentService.save(department);
+
+        log.debug("TransactionalOperations--createEmployee--employee: {}", employee.toString());
+        log.debug("TransactionalOperations--createEmployee--account: {}", account.toString());
+        log.debug("TransactionalOperations--createEmployee--department: {}", department.toString());
+        log.debug("TransactionalOperations--createEmployee--OUT");
+    }
 }
