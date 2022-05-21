@@ -124,4 +124,15 @@ public class UserController {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @GetMapping("/main/organisation/account/{username}")
+    public ResponseEntity<?> createEmployee(@PathVariable String username) {
+        log.debug("UserController--createEmployee--IN");
+        log.debug("UserController--createEmployee--username: {}", username);
+
+        final Account account = accountService.getAccount(username);
+
+        log.debug("UserController--createEmployee--account: {}", account.toString());
+        log.debug("UserController--createEmployee--OUT");
+        return ResponseEntity.ok().body(account);
+    }
 }
