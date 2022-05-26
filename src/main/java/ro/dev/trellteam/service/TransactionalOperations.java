@@ -59,4 +59,89 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--createEmployee--department: {}", department.toString());
         log.debug("TransactionalOperations--createEmployee--OUT");
     }
+
+    @Transactional
+    public Department createDepartment(Organisation organisation, Department department) {
+        log.debug("TransactionalOperations--removeDepartment--IN");
+        log.debug("TransactionalOperations--removeDepartment--organisation: {}", organisation.toString());
+        log.debug("TransactionalOperations--removeDepartment--department: {}", department.toString());
+
+        boolean isRemoved = false;
+        try {
+            department = departmentService.save(department);
+            organisation.addDepartment(department);
+            organisationService.save(organisation);
+            isRemoved = true;
+        } catch(final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        log.debug("TransactionalOperations--removeDepartment--isRemoved: {}", isRemoved);
+        log.debug("TransactionalOperations--removeDepartment--OUT");
+        return isRemoved == true ? department : null;
+    }
+
+    @Transactional
+    public boolean removeDepartment(Organisation organisation, Department department) {
+        log.debug("TransactionalOperations--removeDepartment--IN");
+        log.debug("TransactionalOperations--removeDepartment--organisation: {}", organisation.toString());
+        log.debug("TransactionalOperations--removeDepartment--department: {}", department.toString());
+
+        boolean isRemoved = false;
+        try {
+            organisation.removeDepartment(department);
+            department.purgeEmployees();
+            departmentService.deleteById(department.getId());
+            organisationService.save(organisation);
+            isRemoved = true;
+        } catch(final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        log.debug("TransactionalOperations--removeDepartment--isRemoved: {}", isRemoved);
+        log.debug("TransactionalOperations--removeDepartment--OUT");
+        return isRemoved;
+    }
+
+    @Transactional
+    public Department assignEmployeeToDepartment(Employee employee, Department department) {
+        log.debug("TransactionalOperations--assignEmployeeToDepartment--IN");
+        log.debug("TransactionalOperations--assignEmployeeToDepartment--employee: {}", employee.toString());
+        log.debug("TransactionalOperations--assignEmployeeToDepartment--department: {}", department.toString());
+
+        boolean isAssigned = false;
+        try {
+            department.addEmployee(employee);
+            departmentService.save(department);
+            isAssigned = true;
+        } catch(final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        log.debug("TransactionalOperations--assignEmployeeToDepartment--isAssigned: {}", isAssigned);
+        log.debug("TransactionalOperations--assignEmployeeToDepartment--OUT");
+
+        return isAssigned == true ? department : null;
+    }
+
+    @Transactional
+    public Department unassignEmployeeFromDepartment(Employee employee, Department department) {
+        log.debug("TransactionalOperations--unassignEmployeeFromDepartment--IN");
+        log.debug("TransactionalOperations--unassignEmployeeFromDepartment--employee: {}", employee.toString());
+        log.debug("TransactionalOperations--unassignEmployeeFromDepartment--department: {}", department.toString());
+
+        boolean isUnassigned = false;
+        try {
+            department.removeEmployee(employee);
+            departmentService.save(department);
+            isUnassigned = true;
+        } catch(final Exception e) {
+            log.error(e.getMessage());
+        }
+
+        log.debug("TransactionalOperations--unassignEmployeeFromDepartment--isUnassigned: {}", isUnassigned);
+        log.debug("TransactionalOperations--unassignEmployeeFromDepartment--OUT");
+
+        return isUnassigned == true ? department : null;
+    }
 }

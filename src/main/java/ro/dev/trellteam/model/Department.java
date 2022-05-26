@@ -3,6 +3,7 @@ package ro.dev.trellteam.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class Department {
 
     @OneToMany(
             targetEntity = ro.dev.trellteam.model.Employee.class,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
     @JoinTable(
@@ -40,8 +41,23 @@ public class Department {
     )
     private List<Employee> employees;
 
+    @Transactional
     public void addEmployee(Employee employee) {
         if(employees == null) employees = new ArrayList<Employee>();
         employees.add(employee);
+    }
+
+    @Transactional
+    public void removeEmployee(Employee employee) {
+        if(employees != null) {
+            employees.remove(employee);
+        }
+    }
+
+    @Transactional
+    public void purgeEmployees() {
+        if(employees != null) {
+            employees.clear();
+        }
     }
 }

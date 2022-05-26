@@ -3,6 +3,7 @@ package ro.dev.trellteam.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.dev.trellteam.helper.SecurityHelper;
@@ -12,6 +13,7 @@ import ro.dev.trellteam.service.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -79,14 +81,32 @@ public class UserController {
             department.addEmployee(manager);
         }
 
-        department = departmentService.save(department);
+        department = transactionalOperations.createDepartment(organisation, department);
+
         log.debug("UserController--createDepartment--department: {}", department);
-        organisation.addDepartment(department);
-
-        organisation = organisationService.save(organisation);
-
         log.debug("UserController--createDepartment--OUT");
+
         return ResponseEntity.created(uri).body(department);
+    }
+
+    @PostMapping("/main/organisation/department/delete")
+    public ResponseEntity<?> deleteDepartment(@RequestBody Map<String, String> payload) {
+        log.debug("UserController--deleteDepartment--IN");
+
+        final String departmentName = payload.get("depName");
+        final Long idOrg = Long.parseLong(payload.get("idOrg"));
+        boolean isDeleted = false;
+
+        log.debug("UserController--deleteDepartment--depName: {}", departmentName);
+        log.debug("UserController--deleteDepartment--idOrg: {}", idOrg);
+
+        Organisation organisation = organisationService.findById(idOrg);
+        Department department = departmentService.findByName(departmentName);
+
+        transactionalOperations.removeDepartment(organisation, department);
+
+        log.debug("UserController--deleteDepartment--OUT");
+        return ResponseEntity.ok().body(organisation.getDepartments());
     }
 
     @PostMapping("/main/organisation/employee")
@@ -125,14 +145,88 @@ public class UserController {
     }
 
     @GetMapping("/main/organisation/account/{username}")
-    public ResponseEntity<?> createEmployee(@PathVariable String username) {
-        log.debug("UserController--createEmployee--IN");
-        log.debug("UserController--createEmployee--username: {}", username);
+    public ResponseEntity<?> fetchAccount(@PathVariable String username) {
+        log.debug("UserController--fetchAccount--IN");
+        log.debug("UserController--fetchAccount--username: {}", username);
 
         final Account account = accountService.getAccount(username);
 
-        log.debug("UserController--createEmployee--account: {}", account.toString());
-        log.debug("UserController--createEmployee--OUT");
+        log.debug("UserController--fetchAccount--account: {}", account.toString());
+        log.debug("UserController--fetchAccount--OUT");
         return ResponseEntity.ok().body(account);
+    }
+
+    @PostMapping("/main/organisation/department/employee/assign")
+    public ResponseEntity<?> assignEmployeeToDepartment(@RequestBody Map<String, String> payload) {
+        log.debug("UserController--assignEmployeeToDepartment--IN");
+
+        final Long idOrg = Long.parseLong(payload.get("idOrg"));
+        final Long idEmp = Long.parseLong(payload.get("idEmp"));
+        final String depName = payload.get("depName");
+
+        log.debug("UserController--assignEmployeeToDepartment--idOrg: {}", idOrg);
+        log.debug("UserController--assignEmployeeToDepartment--idEmp: {}", idEmp);
+        log.debug("UserController--assignEmployeeToDepartment--depName: {}", depName);
+
+        final Employee employee = employeeService.findById(idEmp);
+        final Organisation organisation = organisationService.findById(idOrg);
+        final List<Department> departments = organisation.getDepartments();
+
+        Department department = null;
+        for(final Department dep : departments) {
+            if(dep.getName().equals(depName)) {
+                department = dep;
+                break;
+            }
+        }
+
+        if(department != null) department = transactionalOperations.assignEmployeeToDepartment(employee, department);
+
+        log.debug("UserController--assignEmployeeToDepartment--department: {}", department.toString());
+        log.debug("UserController--assignEmployeeToDepartment--OUT");
+
+        if(department != null) {
+            return ResponseEntity.ok().body(department);
+        } else {
+            final String response = "The employee could not be assigned to the department.";
+            return ResponseEntity.internalServerError().body(response);
+        }
+    }
+
+    @PostMapping("/main/organisation/department/employee/unassign")
+    public ResponseEntity<?> unassignEmployeeToDepartment(@RequestBody Map<String, String> payload) {
+        log.debug("UserController--unassignEmployeeToDepartment--IN");
+
+        final Long idOrg = Long.parseLong(payload.get("idOrg"));
+        final Long idEmp = Long.parseLong(payload.get("idEmp"));
+        final String depName = payload.get("depName");
+
+        log.debug("UserController--unassignEmployeeToDepartment--idOrg: {}", idOrg);
+        log.debug("UserController--unassignEmployeeToDepartment--idEmp: {}", idEmp);
+        log.debug("UserController--unassignEmployeeToDepartment--depName: {}", depName);
+
+        final Employee employee = employeeService.findById(idEmp);
+        final Organisation organisation = organisationService.findById(idOrg);
+        final List<Department> departments = organisation.getDepartments();
+
+        Department department = null;
+        for(final Department dep : departments) {
+            if(dep.getName().equals(depName)) {
+                department = dep;
+                break;
+            }
+        }
+
+        if(department != null) department = transactionalOperations.unassignEmployeeFromDepartment(employee, department);
+
+        log.debug("UserController--unassignEmployeeToDepartment--department: {}", department.toString());
+        log.debug("UserController--unassignEmployeeToDepartment--OUT");
+
+        if(department != null) {
+            return ResponseEntity.ok().body(department);
+        } else {
+            final String response = "The employee could not be unassigned from the department.";
+            return ResponseEntity.internalServerError().body(response);
+        }
     }
 }
