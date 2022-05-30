@@ -31,7 +31,7 @@ public class Account {
 
     @OneToOne(
             targetEntity = ro.dev.trellteam.model.Employee.class,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
     @JoinTable(
@@ -43,7 +43,7 @@ public class Account {
 
     @ManyToMany(
             targetEntity = ro.dev.trellteam.model.Role.class,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
     @JoinTable(

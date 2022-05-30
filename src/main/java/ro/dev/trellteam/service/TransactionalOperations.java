@@ -30,6 +30,7 @@ public class TransactionalOperations {
         account = accountService.save(account);
 
         department.addEmployee(employee);
+        organisation.addEmployee(employee);
 
         organisation.addDepartment(department);
         organisation = organisationService.save(organisation);
@@ -51,9 +52,14 @@ public class TransactionalOperations {
         account.setEmployee(employee);
         department.addEmployee(employee);
 
+        Organisation organisation = organisationService.findByDepartmentId(department.getId());
+        organisation.addEmployee(employee);
+
         account = accountService.save(account);
         department = departmentService.save(department);
+        organisation = organisationService.save(organisation);
 
+        log.debug("TransactionalOperations--createEmployee--organisation: {}", organisation.toString());
         log.debug("TransactionalOperations--createEmployee--employee: {}", employee.toString());
         log.debug("TransactionalOperations--createEmployee--account: {}", account.toString());
         log.debug("TransactionalOperations--createEmployee--department: {}", department.toString());

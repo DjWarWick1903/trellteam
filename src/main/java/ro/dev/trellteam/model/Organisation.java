@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity(name = "ORGANISATION")
 @Table(name = "te_tr_organisation")
@@ -42,14 +40,42 @@ public class Organisation {
     )
     private List<Department> departments;
 
+    @OneToMany(
+            targetEntity = ro.dev.trellteam.model.Employee.class,
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "te_tr_org_emp_link",
+            joinColumns = @JoinColumn(name = "id_org"),
+            inverseJoinColumns = @JoinColumn(name = "id_emp")
+    )
+    private Set<Employee> employees;
+
     @Transactional
-    public void addDepartment(Department department) {
+    public void addEmployee(final Employee employee) {
+        if(employees == null) employees = new HashSet<>();
+        employees.add(employee);
+    }
+
+    @Transactional
+    public void removeEmployee(final Employee employee) {
+        if(employees != null) employees.remove(employee);
+    }
+
+    @Transactional
+    public void purgeEmployees() {
+        if(employees != null) employees.clear();
+    }
+
+    @Transactional
+    public void addDepartment(final Department department) {
         if(departments == null) departments = new ArrayList<>();
         departments.add(department);
     }
 
     @Transactional
-    public void removeDepartment(Department department) {
+    public void removeDepartment(final Department department) {
         if(departments != null) {
             departments.remove(department);
         }

@@ -12,10 +12,7 @@ import ro.dev.trellteam.service.*;
 
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -51,7 +48,7 @@ public class UserController {
         log.debug("UserController--getOrganisationEmployees--IN");
         log.debug("UserController--getOrganisationEmployees--idOrganisation: {}", idOrg);
 
-        final List<Employee> employees = employeeService.listOrganisationEmployees(idOrg);
+        final Set<Employee> employees = employeeService.listOrganisationEmployees(idOrg);
 
         log.debug("UserController--getOrganisationEmployees--organisation: {}", employees);
         log.debug("UserController--getOrganisationEmployees--OUT");
@@ -194,7 +191,7 @@ public class UserController {
     }
 
     @PostMapping("/main/organisation/department/employee/unassign")
-    public ResponseEntity<?> unassignEmployeeToDepartment(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> unassignEmployeeFromDepartment(@RequestBody Map<String, String> payload) {
         log.debug("UserController--unassignEmployeeToDepartment--IN");
 
         final Long idOrg = Long.parseLong(payload.get("idOrg"));

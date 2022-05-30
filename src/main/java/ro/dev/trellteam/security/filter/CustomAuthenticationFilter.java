@@ -39,6 +39,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--IN");
         String username;
         String password;
 
@@ -49,16 +50,18 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         } catch(IOException e) {
             throw new AuthenticationServiceException(e.getMessage(), e);
         }
-        log.info("Username is: {}", username);
-        log.info("Password is: {}", password);
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--Username: {}", username);
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--Password: {}", password);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--authenticationToken: {}", authenticationToken.toString());
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--OUT");
         return authenticationManager.authenticate(authenticationToken);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        log.info("Successfully authenticated.");
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--IN");
         final User user = (User) authentication.getPrincipal();
         final String access_token = SecurityHelper.generateAccessToken(user, request.getRequestURL().toString());
         final String refresh_token = SecurityHelper.generateRefreshToken(user.getUsername(), request.getRequestURL().toString());
@@ -66,9 +69,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setHeader("refresh_token", refresh_token);*/
 
         final List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--user: {}", user.toString());
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--roles: {}", roles.toString());
         final LoginDetails loginDetails = new LoginDetails(access_token, refresh_token, roles);
 
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), loginDetails);
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--OUT");
     }
 }

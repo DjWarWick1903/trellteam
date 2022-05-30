@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.dev.trellteam.model.Department;
 import ro.dev.trellteam.model.Employee;
+import ro.dev.trellteam.model.Organisation;
 import ro.dev.trellteam.repository.DepartmentRepository;
 import ro.dev.trellteam.repository.EmployeeRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,16 +19,18 @@ import java.util.List;
 @Transactional
 public class EmployeeService {
     private final EmployeeRepository employeeRepository;
+    private final OrganisationService organisationService;
 
     /**
      * Method used to return a list of employees of an organisation.
      * @param idOrg
      * @return List<Employee>
      */
-    public List<Employee> listOrganisationEmployees(final Long idOrg) {
+    public Set<Employee> listOrganisationEmployees(final Long idOrg) {
         log.debug("EmployeeService--listOrganisationEmployees--IN");
         log.debug("EmployeeService--listOrganisationEmployees--idOrg: {}", idOrg);
-        final List<Employee> employees = employeeRepository.listOrganisationEmployees(idOrg);
+        final Organisation organisation = organisationService.findById(idOrg);
+        final Set<Employee> employees = organisation.getEmployees();
         log.debug("EmployeeService--listOrganisationEmployees--employees: {}", employees);
         log.debug("EmployeeService--listOrganisationEmployees--OUT");
         return employees;

@@ -30,15 +30,17 @@ public class AccountService implements UserDetailsService {
     //method used by Spring Security to find users
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
+        log.debug("AccountService--loadUserByUsername--IN");
         final Account account = accRepo.findByUsername(username);
         if(account == null) {
-            log.error("AccountService--Account not found in the database");
+            log.error("AccountService--loadUserByUsername--Account not found in the database");
             throw new UsernameNotFoundException("Account not found in the database");
         } else {
-            log.info("AccountService--Account found in the database: {}", username);
+            log.debug("AccountService--loadUserByUsername--Account found in the database: {}", username);
         }
 
         final Collection<SimpleGrantedAuthority> authorities = SecurityHelper.getGrants(account.getRoles());
+        log.debug("AccountService--loadUserByUsername--OUT");
 
         return new org.springframework.security.core.userdetails.User(account.getUsername(), account.getPassword(), authorities);
     }
