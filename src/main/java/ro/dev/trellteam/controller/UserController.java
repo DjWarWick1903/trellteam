@@ -43,6 +43,18 @@ public class UserController {
         return ResponseEntity.ok().body(organisation);
     }
 
+    @GetMapping("/main/organisation/department/{id}")
+    public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
+        log.debug("UserController--getDepartment--IN");
+
+        final Department department = departmentService.findById(id);
+
+        log.debug("UserController--getDepartment--department: {}", department.toString());
+        log.debug("UserController--getDepartment--OUT");
+
+        return ResponseEntity.ok().body(department);
+    }
+
     @GetMapping("/main/organisation/employees/{idOrg}")
     public ResponseEntity<?> getOrganisationEmployees(@PathVariable Long idOrg) {
         log.debug("UserController--getOrganisationEmployees--IN");
@@ -225,5 +237,33 @@ public class UserController {
             final String response = "The employee could not be unassigned from the department.";
             return ResponseEntity.internalServerError().body(response);
         }
+    }
+
+    @PutMapping("/main/organisation/department")
+    public ResponseEntity<Department> updateDepartment(@RequestBody Map<String, String> payload) {
+        log.debug("UserController--updateDepartment--IN");
+
+        final Long idDep = Long.parseLong(payload.get("idDep"));
+        final String depName = (String) payload.get("depName");
+        final Long managerId = Long.parseLong(payload.get("idMan"));
+
+        log.debug("UserController--updateDepartment--idDep: {}", idDep);
+        log.debug("UserController--updateDepartment--depName: {}", depName);
+        log.debug("UserController--updateDepartment--managerId: {}", managerId);
+
+        Department department = departmentService.findById(idDep);
+        department.setName(depName);
+
+        if(managerId != null) {
+            final Employee employee = managerId == 0 ? null : employeeService.findById(managerId);
+            department.setManager(employee);
+        }
+
+        department = departmentService.save(department);
+
+        log.debug("UserController--updateDepartment--department: {}", department.toString());
+        log.debug("UserController--updateDepartment--OUT");
+
+        return ResponseEntity.ok().body(department);
     }
 }

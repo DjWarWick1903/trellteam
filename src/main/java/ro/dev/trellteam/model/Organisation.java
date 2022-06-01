@@ -87,4 +87,17 @@ public class Organisation {
             departments.clear();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Organisation that = (Organisation) o;
+        return id.equals(that.id) && name.equals(that.name) && sign.equals(that.sign) && CUI.equals(that.CUI) && dateCreated.equals(that.dateCreated) && domain.equals(that.domain) && Objects.equals(departments, that.departments) && Objects.equals(employees, that.employees);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, sign, CUI, dateCreated, domain, departments, employees);
+    }
 }
