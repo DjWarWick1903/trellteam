@@ -54,7 +54,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         log.debug("CustomAuthenticationFilter--attemptAuthentication--Password: {}", password);
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        log.debug("CustomAuthenticationFilter--attemptAuthentication--authenticationToken: {}", authenticationToken.toString());
+        log.debug("CustomAuthenticationFilter--attemptAuthentication--authenticationToken: {}", authenticationToken);
         log.debug("CustomAuthenticationFilter--attemptAuthentication--OUT");
         return authenticationManager.authenticate(authenticationToken);
     }
@@ -69,8 +69,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setHeader("refresh_token", refresh_token);*/
 
         final List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-        log.debug("CustomAuthenticationFilter--successfulAuthentication--user: {}", user.toString());
-        log.debug("CustomAuthenticationFilter--successfulAuthentication--roles: {}", roles.toString());
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--user: {}", user);
+        log.debug("CustomAuthenticationFilter--successfulAuthentication--roles: {}", roles);
         final LoginDetails loginDetails = new LoginDetails(access_token, refresh_token, roles);
 
         response.setContentType(APPLICATION_JSON_VALUE);

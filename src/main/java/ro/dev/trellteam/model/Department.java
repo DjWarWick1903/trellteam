@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "DEPARTMENT")
 @Table(name = "te_tr_department")
@@ -39,11 +41,11 @@ public class Department {
             joinColumns = @JoinColumn(name = "id_dep"),
             inverseJoinColumns = @JoinColumn(name = "id_emp")
     )
-    private List<Employee> employees;
+    private Set<Employee> employees;
 
     @Transactional
     public void addEmployee(Employee employee) {
-        if(employees == null) employees = new ArrayList<Employee>();
+        if(employees == null) employees = new HashSet<>();
         employees.add(employee);
     }
 

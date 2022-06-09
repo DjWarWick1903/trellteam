@@ -30,66 +30,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
 public class SecurityController {
-    private final TransactionalOperations transactionalOperations;
     private final AccountService accountService;
     private final RoleService roleService;
-    private final OrganisationService organisationService;
-    private final DepartmentService departmentService;
-    private final EmployeeService employeeService;
 
     @GetMapping("/ping")
     public ResponseEntity<?> ping() {
         return ResponseEntity.ok().body(null);
-    }
-
-    @GetMapping("/account/all")
-    public ResponseEntity<List<Account>> getAccounts() {
-        return ResponseEntity.ok().body(accountService.list());
-    }
-
-    @GetMapping("/account")
-    public ResponseEntity<Account> getAccount(@RequestBody Map<String, String> payload) {
-        final String username = payload.get("username");
-        return ResponseEntity.ok().body(accountService.getAccount(username));
-    }
-
-    @PostMapping("/account")
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account").toUriString());
-        return ResponseEntity.created(uri).body(accountService.save(account));
-    }
-
-    @PostMapping("/organisation/register")
-    public ResponseEntity<?> registerOrganisation(@RequestBody Map<String, Object> payload) {
-        log.debug("SecurityController--registerOrganisation--IN");
-        log.debug("SecurityController--registerOrganisation--payload: {}", payload.toString());
-
-        final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account").toUriString());
-        log.debug("SecurityController--registerOrganisation--uri: {}", uri);
-
-        try {
-            final Map<String, String> organisationData = (Map) payload.get("organisation");
-            final String departmentName = (String) payload.get("depName");
-            final Map<String, String> employeeData = (Map) payload.get("employee");
-            final Map<String, String> accountData = (Map) payload.get("account");
-
-            Organisation organisation = SecurityHelper.getOrganisationFromMap(organisationData);
-            Employee employee = SecurityHelper.getEmployeeFromMap(employeeData);
-            Account account = SecurityHelper.getAccountFromMap(accountData);
-            Department department = new Department(null, departmentName, null, null);
-
-            transactionalOperations.createOrganisationRepository(organisation, department, employee, account);
-        } catch(final Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().body(e.getMessage());
-        }
-
-        final String message = "Organisation repository created succesfully.";
-        return ResponseEntity.created(uri).body(message);
-        /*final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/security/account/register").toUriString());
-        final Role role = roleService.findByName("ADMIN");
-        account.addRole(role);
-        return ResponseEntity.created(uri).body(accountService.saveAccount(account));*/
     }
 
     //pathvariable

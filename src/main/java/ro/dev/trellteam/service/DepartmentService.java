@@ -55,7 +55,7 @@ public class DepartmentService {
         log.debug("DepartmentService--findById--IN");
         log.debug("DepartmentService--findById--id: {}" , id);
         final Department department = departmentRepository.findById(id).get();
-        log.debug("DepartmentService--findById--department: {}" , department.toString());
+        log.debug("DepartmentService--findById--department: {}" , department);
         log.debug("DepartmentService--findById--OUT");
 
         return department;

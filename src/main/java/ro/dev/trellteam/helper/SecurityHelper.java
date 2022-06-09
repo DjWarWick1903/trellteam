@@ -27,7 +27,7 @@ public class SecurityHelper {
     private final static int jwtExpirationMs = 3600000;
     private final static int jwtRefreshExpirationMs = 86400000;
 
-    private static Map<String, String[]> endpointPrivileges;
+    private static final Map<String, String[]> endpointPrivileges;
 
     static {
         endpointPrivileges = new HashMap<>();
@@ -43,7 +43,12 @@ public class SecurityHelper {
 
         //Others
         endpointPrivileges.put("/security/ping", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
-        endpointPrivileges.put("/user/main/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/user/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/board/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/card/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/organisation/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/employee/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
+        endpointPrivileges.put("/department/**", new String[] {"ADMIN", "MANAGER", "DEVOPS", "DEV"});
     }
 
     public static Map<String, String[]> getEndpointPrivileges() { return endpointPrivileges; }
@@ -139,76 +144,5 @@ public class SecurityHelper {
         });
         log.debug("SecurityHelper--getGrants--OUT");
         return authorities;
-    }
-
-    /**
-     * Method used to extract Organisation object from a Map with String values.
-     * @param organisationData
-     * @return Organisation
-     */
-    public static Organisation getOrganisationFromMap(final Map<String, String> organisationData) {
-        log.debug("SecurityHelper--getOrganisationFromMap--IN");
-        Organisation organisation = new Organisation();
-        organisation.setName(organisationData.get("name"));
-        organisation.setCUI(organisationData.get("cui"));
-        organisation.setDomain(organisationData.get("domain"));
-        organisation.setSign(organisationData.get("sign"));
-        organisation.setDateCreated(new Date());
-
-        log.debug("SecurityHelper--getOrganisationFromMap--name: {}", organisation.getName());
-        log.debug("SecurityHelper--getOrganisationFromMap--cui: {}", organisation.getCUI());
-        log.debug("SecurityHelper--getOrganisationFromMap--domain: {}", organisation.getDomain());
-        log.debug("SecurityHelper--getOrganisationFromMap--sign: {}", organisation.getSign());
-
-        log.debug("SecurityHelper--getOrganisationFromMap--OUT");
-        return organisation;
-    }
-
-    /**
-     * Method used to extract Employee object from a Map with String values.
-     * @param employeeData
-     * @return Employee
-     */
-    public static Employee getEmployeeFromMap(final Map<String, String> employeeData) throws Exception {
-        log.debug("SecurityHelper--getEmployeeFromMap--IN");
-        Employee employee = new Employee();
-        employee.setCNP(employeeData.get("cnp"));
-        employee.setFirstName(employeeData.get("firstName"));
-        employee.setLastName(employeeData.get("lastName"));
-        employee.setPhone(employeeData.get("phone"));
-
-        final String bdayString = employeeData.get("bday");
-        final Date bday = new SimpleDateFormat("yyyy-MM-dd").parse(bdayString);
-        employee.setBday(bday);
-
-        log.debug("SecurityHelper--getEmployeeFromMap--firstName: {}", employee.getFirstName());
-        log.debug("SecurityHelper--getEmployeeFromMap--lastName: {}", employee.getLastName());
-        log.debug("SecurityHelper--getEmployeeFromMap--phone: {}", employee.getPhone());
-        log.debug("SecurityHelper--getEmployeeFromMap--cnp: {}", employee.getCNP());
-        log.debug("SecurityHelper--getEmployeeFromMap--bday: {}", employee.getBday());
-
-        log.debug("SecurityHelper--getEmployeeFromMap--OUT");
-        return employee;
-    }
-
-    /**
-     * Method used to extract Account object from a Map with String values.
-     * @param accountData
-     * @return Account
-     */
-    public static Account getAccountFromMap(final Map<String, String> accountData) {
-        log.debug("SecurityHelper--getAccountFromMap--IN");
-        Account account = new Account();
-        account.setEmail(accountData.get("email"));
-        account.setUsername(accountData.get("username"));
-        account.setPassword(accountData.get("password"));
-        account.setDisabled(0);
-        account.setDateCreated(new Date());
-
-        log.debug("SecurityHelper--getAccountFromMap--email: {}", account.getEmail());
-        log.debug("SecurityHelper--getAccountFromMap--username: {}", account.getUsername());
-        log.debug("SecurityHelper--getAccountFromMap--password: {}", account.getPassword());
-        log.debug("SecurityHelper--getAccountFromMap--OUT");
-        return account;
     }
 }

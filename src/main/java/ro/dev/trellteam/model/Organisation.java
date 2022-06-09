@@ -38,7 +38,7 @@ public class Organisation {
             joinColumns = @JoinColumn(name = "id_org"),
             inverseJoinColumns = @JoinColumn(name = "id_dep")
     )
-    private List<Department> departments;
+    private Set<Department> departments;
 
     @OneToMany(
             targetEntity = ro.dev.trellteam.model.Employee.class,
@@ -70,7 +70,7 @@ public class Organisation {
 
     @Transactional
     public void addDepartment(final Department department) {
-        if(departments == null) departments = new ArrayList<>();
+        if(departments == null) departments = new HashSet<>();
         departments.add(department);
     }
 

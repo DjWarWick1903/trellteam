@@ -18,6 +18,8 @@ public class TransactionalOperations {
     private final EmployeeService employeeService;
     private final AccountService accountService;
     private final RoleService roleService;
+    private final CardService cardService;
+    private final BoardService boardService;
 
     @Transactional
     public void createOrganisationRepository(Organisation organisation, Department department, Employee employee, Account account) {
@@ -36,7 +38,7 @@ public class TransactionalOperations {
         organisation = organisationService.save(organisation);
 
         log.debug("TransactionalOperations--createOrganisationRepository--organisation: {}", organisation.toString());
-        log.debug("TransactionalOperations--createOrganisationRepository--department: {}", department.toString());
+        log.debug("TransactionalOperations--createOrganisationRepository--department: {}", department);
         log.debug("TransactionalOperations--createOrganisationRepository--employee: {}", employee.toString());
         log.debug("TransactionalOperations--createOrganisationRepository--account: {}", account.toString());
 
@@ -149,5 +151,20 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--unassignEmployeeFromDepartment--OUT");
 
         return isUnassigned == true ? department : null;
+    }
+
+    @Transactional
+    public Card createCard(Board board, Card card) {
+        log.debug("TransactionalOperations--createCard--IN");
+
+        card = cardService.createCard(card);
+        log.debug("TransactionalOperations--createCard--card: {}", card);
+
+        board.addCard(card);
+        board = boardService.createBoard(board);
+        log.debug("TransactionalOperations--createCard--board: {}", board);
+        log.debug("TransactionalOperations--createCard--OUT");
+
+        return card;
     }
 }

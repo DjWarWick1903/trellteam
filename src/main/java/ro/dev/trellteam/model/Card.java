@@ -17,28 +17,36 @@ public class Card {
     private Long id;
     @Column(name = "title")
     private String title;
-    @Column(name = "type")
-    private String type;
     @Column(name = "difficulty")
-    private Integer difficulty;
+    private String difficulty;
     @Column(name = "description")
     private String description;
     @Column(name = "notes")
     private String notes;
-    @Column(name = "idSwimlane")
-    private Long idSwimlane;
+    @Column(name = "status")
+    private String status;
+
     @ManyToOne(
             targetEntity = ro.dev.trellteam.model.Account.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER
     )
     @JoinColumn(name = "id_publisher")
-    private Account idPublisher;
+    private Account publisher;
+
     @ManyToOne(
             targetEntity = ro.dev.trellteam.model.Account.class,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER
     )
     @JoinColumn(name = "id_asigned")
-    private Account idAssigned;
+    private Account assigned;
+
+    @OneToOne(
+            targetEntity = ro.dev.trellteam.model.Type.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name="id_type")
+    private Type type;
 }
