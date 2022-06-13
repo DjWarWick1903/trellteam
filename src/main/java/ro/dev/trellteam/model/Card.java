@@ -25,6 +25,8 @@ public class Card {
     private String notes;
     @Column(name = "status")
     private String status;
+    @Column(name = "urgency")
+    private String urgency;
 
     @ManyToOne(
             targetEntity = ro.dev.trellteam.model.Account.class,

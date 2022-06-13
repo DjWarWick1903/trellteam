@@ -3,7 +3,6 @@ package ro.dev.trellteam.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ro.dev.trellteam.model.*;
 
@@ -157,7 +156,7 @@ public class TransactionalOperations {
     public Card createCard(Board board, Card card) {
         log.debug("TransactionalOperations--createCard--IN");
 
-        card = cardService.createCard(card);
+        card = cardService.save(card);
         log.debug("TransactionalOperations--createCard--card: {}", card);
 
         board.addCard(card);

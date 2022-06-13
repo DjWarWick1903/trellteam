@@ -23,7 +23,7 @@ public class CardService {
      * @param card
      * @return Card
      */
-    public Card createCard(Card card) {
+    public Card save(Card card) {
         log.debug("CardService--createCard--IN");
 
         card = cardRepository.save(card);
