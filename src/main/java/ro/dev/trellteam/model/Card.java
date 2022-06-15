@@ -3,8 +3,15 @@ package ro.dev.trellteam.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SortComparator;
+import org.springframework.transaction.annotation.Transactional;
+import ro.dev.trellteam.comparator.CommentComparator;
+import ro.dev.trellteam.comparator.LogComparator;
 
 import javax.persistence.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity(name = "CARD")
 @Table(name = "te_tr_card")
@@ -51,4 +58,42 @@ public class Card {
     )
     @JoinColumn(name="id_type")
     private Type type;
+
+    @OneToMany(
+            targetEntity = ro.dev.trellteam.model.Comment.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "te_tr_card_comm_link",
+            joinColumns = @JoinColumn(name = "id_card"),
+            inverseJoinColumns = @JoinColumn(name = "id_com")
+    )
+    @SortComparator(CommentComparator.class)
+    private Set<Comment> comments;
+
+    @OneToMany(
+            targetEntity = ro.dev.trellteam.model.CardLog.class,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER
+    )
+    @JoinTable(
+            name = "te_tr_card_log_link",
+            joinColumns = @JoinColumn(name = "id_card"),
+            inverseJoinColumns = @JoinColumn(name = "id_log")
+    )
+    @SortComparator(LogComparator.class)
+    private Set<CardLog> logs;
+
+    @Transactional
+    public void addComment(final Comment comment) {
+        if(comments == null) comments = new HashSet<>();
+        comments.add(comment);
+    }
+
+    @Transactional
+    public void addLog(final CardLog log) {
+        if(logs == null) logs = new HashSet<>();
+        logs.add(log);
+    }
 }

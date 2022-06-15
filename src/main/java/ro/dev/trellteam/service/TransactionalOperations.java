@@ -2,6 +2,7 @@ package ro.dev.trellteam.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.dev.trellteam.model.*;
@@ -19,6 +20,8 @@ public class TransactionalOperations {
     private final RoleService roleService;
     private final CardService cardService;
     private final BoardService boardService;
+    private final CommentService commentService;
+    private final CardLogService cardLogService;
 
     @Transactional
     public void createOrganisationRepository(Organisation organisation, Department department, Employee employee, Account account) {
@@ -153,8 +156,12 @@ public class TransactionalOperations {
     }
 
     @Transactional
-    public Card createCard(Board board, Card card) {
+    public Card createCard(Board board, Card card, CardLog cardLog) {
         log.debug("TransactionalOperations--createCard--IN");
+
+        cardLog = cardLogService.save(cardLog);
+        card.addLog(cardLog);
+        log.debug("TransactionalOperations--createCard--cardLog: {}", cardLog);
 
         card = cardService.save(card);
         log.debug("TransactionalOperations--createCard--card: {}", card);
@@ -164,6 +171,89 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--createCard--board: {}", board);
         log.debug("TransactionalOperations--createCard--OUT");
 
+        return card;
+    }
+
+    @Transactional
+    public Card createCardComment(Card card, Comment comment, CardLog cardLog) {
+        log.debug("TransactionalOperations--createCardComment--IN");
+
+        comment = commentService.save(comment);
+        cardLog = cardLogService.save(cardLog);
+
+        card.addComment(comment);
+        card.addLog(cardLog);
+
+        log.debug("TransactionalOperations--createCardComment--comment: {}", comment);
+        log.debug("TransactionalOperations--createCardComment--cardLog: {}", cardLog);
+
+        card = cardService.save(card);
+
+        log.debug("TransactionalOperations--createCardComment--card: {}", card);
+        log.debug("TransactionalOperations--createCardComment--OUT");
+
+        return card;
+    }
+
+    @Transactional
+    public Card changeCardStatus(Card card, CardLog cardLog, String status) {
+        log.debug("TransactionalOperations--changeCardStatus--IN");
+
+        cardLog = cardLogService.save(cardLog);
+
+        card.setStatus(status);
+        card.addLog(cardLog);
+
+        log.debug("TransactionalOperations--changeCardStatus--status: {}", status);
+        log.debug("TransactionalOperations--changeCardStatus--cardLog: {}", cardLog);
+
+        card = cardService.save(card);
+
+        log.debug("TransactionalOperations--changeCardStatus--card: {}", card);
+        log.debug("TransactionalOperations--changeCardStatus--OUT");
+
+        return card;
+    }
+
+    @Transactional
+    public Card updateCard(Card card, CardLog cardLog) {
+        log.debug("TransactionalOperations--updateCard--IN");
+
+        cardLog = cardLogService.save(cardLog);
+        card.addLog(cardLog);
+        card = cardService.save(card);
+
+        log.debug("TransactionalOperations--updateCard--cardLog: {}", cardLog);
+        log.debug("TransactionalOperations--updateCard--card: {}", card);
+        log.debug("TransactionalOperations--updateCard--OUT");
+        return card;
+    }
+
+    @Transactional
+    public Card assignCard(Card card, CardLog cardLog) {
+        log.debug("TransactionalOperations--assignCard--IN");
+
+        cardLog = cardLogService.save(cardLog);
+        card.addLog(cardLog);
+        card = cardService.save(card);
+
+        log.debug("TransactionalOperations--assignCard--cardLog: {}", cardLog);
+        log.debug("TransactionalOperations--assignCard--card: {}", card);
+        log.debug("TransactionalOperations--assignCard--OUT");
+        return card;
+    }
+
+    @Transactional
+    public Card unassignCard(Card card, CardLog cardLog) {
+        log.debug("TransactionalOperations--unassignCard--IN");
+
+        cardLog = cardLogService.save(cardLog);
+        card.addLog(cardLog);
+        card = cardService.save(card);
+
+        log.debug("TransactionalOperations--unassignCard--cardLog: {}", cardLog);
+        log.debug("TransactionalOperations--unassignCard--card: {}", card);
+        log.debug("TransactionalOperations--unassignCard--OUT");
         return card;
     }
 }

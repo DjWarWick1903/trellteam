@@ -7,19 +7,19 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity(name = "CARDLOG")
-@Table(name = "te_tr_card_log")
+@Entity(name = "COMMENT")
+@Table(name = "te_tr_card_comm")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardLog {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "log_text")
+    @Column(name = "comm_text")
     private String text;
-    @Column(name = "log_date")
-    private Date logDate;
+    @Column(name = "comm_date")
+    private Date commentDate;
 
     @OneToOne(
             targetEntity = ro.dev.trellteam.model.Account.class,
