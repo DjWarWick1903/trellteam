@@ -31,7 +31,7 @@ public class TransactionalOperations {
         final Role role = roleService.findByName("ADMIN");
         account.addRole(role);
         account.setEmployee(employee);
-        account = accountService.save(account);
+        account = accountService.save(account, true);
 
         department.addEmployee(employee);
         organisation.addEmployee(employee);
@@ -59,7 +59,7 @@ public class TransactionalOperations {
         Organisation organisation = organisationService.findByDepartmentId(department.getId());
         organisation.addEmployee(employee);
 
-        account = accountService.save(account);
+        account = accountService.save(account, true);
         department = departmentService.save(department);
         organisation = organisationService.save(organisation);
 

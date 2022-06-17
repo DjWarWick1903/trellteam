@@ -44,7 +44,7 @@ public class SecurityController {
         final Role role = roleService.findById(form.getRoleID());
         Account account = accountService.getAccount(form.getUsername());
         account.addRole(role);
-        return ResponseEntity.ok().body(accountService.save(account));
+        return ResponseEntity.ok().body(accountService.save(account, false));
     }
 
     @GetMapping("/role")

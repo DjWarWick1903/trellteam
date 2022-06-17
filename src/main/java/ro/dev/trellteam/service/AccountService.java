@@ -50,9 +50,9 @@ public class AccountService implements UserDetailsService {
      * @param account
      * @return Account
      */
-    public Account save(Account account) {
+    public Account save(Account account, boolean isNewAccount) {
         log.info("AccountService--save--IN");
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        if(isNewAccount) account.setPassword(passwordEncoder.encode(account.getPassword()));
         account = accRepo.save(account);
         log.info("AccountService--save--OUT");
 

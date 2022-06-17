@@ -42,7 +42,7 @@ public class UserController {
 
         log.debug("UserController--createAccount--account: {}", account.toString());
         log.debug("UserController--createAccount--OUT");
-        return ResponseEntity.created(uri).body(accountService.save(account));
+        return ResponseEntity.created(uri).body(accountService.save(account, true));
     }
 
     @GetMapping("/account")

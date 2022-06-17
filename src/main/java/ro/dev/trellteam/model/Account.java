@@ -5,9 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity(name = "ACCOUNT")
 @Table(name = "te_tr_account")
@@ -53,10 +51,15 @@ public class Account {
     )
     private List<Role> roles;
 
-    public void addRole(Role role) {
+    public void addRole(final Role role) {
         if(roles == null) {
             roles = new ArrayList<>();
+            roles.add(role);
+        } else {
+            Set<Role> roleSet = new HashSet<>(roles);
+            roleSet.add(role);
+            roles = new ArrayList<>(roleSet);
         }
-        roles.add(role);
+
     }
 }
