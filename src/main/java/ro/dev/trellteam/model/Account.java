@@ -60,6 +60,11 @@ public class Account {
             roleSet.add(role);
             roles = new ArrayList<>(roleSet);
         }
+    }
 
+    public void removeRole(final Role role) {
+        if(roles != null) {
+            roles.remove(role);
+        }
     }
 }

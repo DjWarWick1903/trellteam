@@ -39,17 +39,49 @@ public class SecurityController {
     }
 
     //pathvariable
-    @PutMapping ("/account/role")
+    @PutMapping ("/account/role/add")
     public ResponseEntity<Account> addRoleToAccount(@RequestBody RoleToUserForm form) {
+        log.debug("SecurityController--addRoleToAccount--IN");
+        log.debug("SecurityController--addRoleToAccount--form: {}", form);
+
         final Role role = roleService.findById(form.getRoleID());
         Account account = accountService.getAccount(form.getUsername());
         account.addRole(role);
-        return ResponseEntity.ok().body(accountService.save(account, false));
+
+        account = accountService.save(account, false);
+        log.debug("SecurityController--addRoleToAccount--OUT");
+
+        return ResponseEntity.ok().body(account);
+    }
+
+    @PutMapping("/account/role/remove")
+    public ResponseEntity<Account> removeRoleFromAccount(@RequestBody RoleToUserForm form) {
+        log.debug("SecurityController--removeRoleFromAccount--IN");
+        log.debug("SecurityController--removeRoleFromAccount--form: {}", form);
+
+        final Role role = roleService.findById(form.getRoleID());
+        Account account = accountService.getAccount(form.getUsername());
+        account.removeRole(role);
+
+        account = accountService.save(account, false);
+        log.debug("SecurityController--removeRoleFromAccount--OUT");
+
+        return ResponseEntity.ok().body(account);
     }
 
     @GetMapping("/role")
     public ResponseEntity<List<Role>> getRoles() {
         return ResponseEntity.ok().body(roleService.list());
+    }
+
+    @GetMapping("/account/role/{username}")
+    public ResponseEntity<List<Role>> getAccountRoles(@PathVariable String username) {
+        log.debug("SecurityController--getAccountRoles--IN");
+        log.debug("SecurityController--getAccountRoles--username: {}", username);
+        final Account account = accountService.getAccount(username);
+        final List<Role> roles = account.getRoles();
+        log.debug("SecurityController--getAccountRoles--OUT");
+        return ResponseEntity.ok().body(roles);
     }
 
     @PostMapping("/role")
