@@ -35,7 +35,7 @@ public class SecurityHelper {
         //permit all
         endpointPrivileges.put("/security/login/**", new String[] {"ALL"});
         endpointPrivileges.put("/security/token/refresh", new String[] {"ALL"});
-        endpointPrivileges.put("/security/organisation/register", new String[] {"ALL"});
+        endpointPrivileges.put("/organisation/main", new String[] {"ALL"});
 
         //ADMIN only
         endpointPrivileges.put("/security/account/**", new String[] {"ADMIN"});

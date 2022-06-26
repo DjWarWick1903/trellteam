@@ -24,7 +24,7 @@ public class AccountUnitTest {
     public void findAllTest() {
         List<Account> accounts = accountService.list();
 
-        Assert.assertEquals(accounts.size(), 1);
+        Assert.assertEquals(accounts.size(), 5);
     }
 
     @Test
@@ -42,6 +42,6 @@ public class AccountUnitTest {
 
         Account account = accountService.getAccount("robertpop");
         account.setRoles(roles);
-        accountService.save(account);
+        accountService.save(account, false);
     }
 }

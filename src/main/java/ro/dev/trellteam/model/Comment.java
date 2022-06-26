@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
+public class Comment implements Comparable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +28,9 @@ public class Comment {
     )
     @JoinColumn(name="id_acc")
     private Account user;
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
+    }
 }

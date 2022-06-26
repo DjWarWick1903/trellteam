@@ -12,6 +12,7 @@ import javax.persistence.*;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity(name = "CARD")
 @Table(name = "te_tr_card")
@@ -87,13 +88,13 @@ public class Card {
 
     @Transactional
     public void addComment(final Comment comment) {
-        if(comments == null) comments = new HashSet<>();
+        if(comments == null) comments = new TreeSet<>();
         comments.add(comment);
     }
 
     @Transactional
     public void addLog(final CardLog log) {
-        if(logs == null) logs = new HashSet<>();
+        if(logs == null) logs = new TreeSet<>();
         logs.add(log);
     }
 }
