@@ -1,4 +1,4 @@
-package ro.dev.trellteam.security;
+package ro.dev.trellteam.security.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
