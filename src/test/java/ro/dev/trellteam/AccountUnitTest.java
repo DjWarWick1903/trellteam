@@ -6,9 +6,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ro.dev.trellteam.model.Account;
-import ro.dev.trellteam.model.Role;
-import ro.dev.trellteam.service.AccountService;
+import ro.dev.trellteam.domain.Account;
+import ro.dev.trellteam.domain.Role;
+import ro.dev.trellteam.web.service.AccountService;
 
 import java.util.ArrayList;
 import java.util.List;
