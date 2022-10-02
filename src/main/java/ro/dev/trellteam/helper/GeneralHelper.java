@@ -1,10 +1,10 @@
 package ro.dev.trellteam.helper;
 
 import lombok.extern.slf4j.Slf4j;
-import ro.dev.trellteam.model.Account;
-import ro.dev.trellteam.model.Card;
-import ro.dev.trellteam.model.Employee;
-import ro.dev.trellteam.model.Organisation;
+import ro.dev.trellteam.domain.Account;
+import ro.dev.trellteam.domain.Card;
+import ro.dev.trellteam.domain.Employee;
+import ro.dev.trellteam.domain.Organisation;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
