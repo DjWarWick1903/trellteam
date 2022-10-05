@@ -1,4 +1,4 @@
-package ro.dev.trellteam.web.mappers;
+package ro.dev.trellteam.web.mapper;
 
 import org.mapstruct.Mapper;
 import ro.dev.trellteam.domain.Organisation;
