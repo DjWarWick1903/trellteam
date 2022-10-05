@@ -3,6 +3,7 @@ package ro.dev.trellteam.web.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ro.dev.trellteam.enums.CardStatusEnum;
 
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class CardDto {
     private String difficulty;
     private String description;
     private String notes;
-    private String status;
+    private CardStatusEnum status;
     private String urgency;
     private AccountDto publisher;
     private AccountDto assigned;

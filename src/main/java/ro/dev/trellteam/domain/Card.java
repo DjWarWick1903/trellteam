@@ -5,6 +5,7 @@ import org.hibernate.annotations.SortComparator;
 import org.springframework.transaction.annotation.Transactional;
 import ro.dev.trellteam.comparator.CommentComparator;
 import ro.dev.trellteam.comparator.LogComparator;
+import ro.dev.trellteam.enums.CardStatusEnum;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -29,7 +30,7 @@ public class Card {
     @Column(name = "notes")
     private String notes;
     @Column(name = "status")
-    private String status;
+    private CardStatusEnum status;
     @Column(name = "urgency")
     private String urgency;
 
