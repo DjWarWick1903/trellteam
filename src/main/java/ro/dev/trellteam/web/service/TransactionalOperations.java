@@ -2,6 +2,7 @@ package ro.dev.trellteam.web.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ro.dev.trellteam.domain.Account;
@@ -13,38 +14,49 @@ import ro.dev.trellteam.domain.Department;
 import ro.dev.trellteam.domain.Employee;
 import ro.dev.trellteam.domain.Organisation;
 import ro.dev.trellteam.domain.Role;
+import ro.dev.trellteam.enums.CardStatusEnum;
+import ro.dev.trellteam.web.repository.AccountRepository;
+import ro.dev.trellteam.web.repository.BoardRepository;
+import ro.dev.trellteam.web.repository.CardLogRepository;
+import ro.dev.trellteam.web.repository.CardRepository;
+import ro.dev.trellteam.web.repository.CommentRepository;
+import ro.dev.trellteam.web.repository.DepartmentRepository;
+import ro.dev.trellteam.web.repository.EmployeeRepository;
+import ro.dev.trellteam.web.repository.OrganisationRepository;
+import ro.dev.trellteam.web.repository.RoleRepository;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class TransactionalOperations {
-
-    private final OrganisationService organisationService;
-    private final DepartmentService departmentService;
-    private final EmployeeService employeeService;
-    private final AccountService accountService;
-    private final RoleService roleService;
-    private final CardService cardService;
-    private final BoardService boardService;
-    private final CommentService commentService;
-    private final CardLogService cardLogService;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final EmployeeRepository employeeRepository;
+    private final AccountRepository accountRepository;
+    private final OrganisationRepository organisationRepository;
+    private final DepartmentRepository departmentRepository;
+    private final BoardRepository boardRepository;
+    private final CardRepository cardRepository;
+    private final CardLogRepository cardLogRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void createOrganisationRepository(Organisation organisation, Department department, Employee employee, Account account) {
         log.debug("TransactionalOperations--createOrganisationRepository--IN");
-        //employee = employeeService.saveAndFlush(employee);
+        employee = employeeRepository.saveAndFlush(employee);
 
-        final Role role = roleService.findByName("ADMIN");
+        final Role role = roleRepository.findByName("ADMIN");
         account.addRole(role);
         account.setEmployee(employee);
-        account = accountService.save(account, true);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account = accountRepository.save(account);
 
         department.addEmployee(employee);
         organisation.addEmployee(employee);
 
         organisation.addDepartment(department);
-        organisation = organisationService.save(organisation);
+        organisation = organisationRepository.save(organisation);
 
         log.debug("TransactionalOperations--createOrganisationRepository--organisation: {}", organisation.toString());
         log.debug("TransactionalOperations--createOrganisationRepository--department: {}", department);
@@ -58,17 +70,18 @@ public class TransactionalOperations {
     public void createEmployee(Account account, Employee employee, Department department) {
         log.debug("TransactionalOperations--createEmployee--IN");
 
-        employee = employeeService.save(employee);
+        employee = employeeRepository.save(employee);
 
         account.setEmployee(employee);
         department.addEmployee(employee);
 
-        Organisation organisation = organisationService.findByDepartmentId(department.getId());
+        Organisation organisation = organisationRepository.findByDepartmentId(department.getId());
         organisation.addEmployee(employee);
 
-        account = accountService.save(account, true);
-        department = departmentService.save(department);
-        organisation = organisationService.save(organisation);
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account = accountRepository.save(account);
+        department = departmentRepository.save(department);
+        organisation = organisationRepository.save(organisation);
 
         log.debug("TransactionalOperations--createEmployee--organisation: {}", organisation.toString());
         log.debug("TransactionalOperations--createEmployee--employee: {}", employee.toString());
@@ -85,9 +98,9 @@ public class TransactionalOperations {
 
         boolean isRemoved = false;
         try {
-            department = departmentService.save(department);
+            department = departmentRepository.save(department);
             organisation.addDepartment(department);
-            organisationService.save(organisation);
+            organisationRepository.save(organisation);
             isRemoved = true;
         } catch(final Exception e) {
             log.error(e.getMessage());
@@ -108,8 +121,8 @@ public class TransactionalOperations {
         try {
             organisation.removeDepartment(department);
             department.purgeEmployees();
-            departmentService.deleteById(department.getId());
-            organisationService.save(organisation);
+            departmentRepository.deleteById(department.getId());
+            organisationRepository.save(organisation);
             isRemoved = true;
         } catch(final Exception e) {
             log.error(e.getMessage());
@@ -129,7 +142,7 @@ public class TransactionalOperations {
         boolean isAssigned = false;
         try {
             department.addEmployee(employee);
-            departmentService.save(department);
+            departmentRepository.save(department);
             isAssigned = true;
         } catch(final Exception e) {
             log.error(e.getMessage());
@@ -150,7 +163,7 @@ public class TransactionalOperations {
         boolean isUnassigned = false;
         try {
             department.removeEmployee(employee);
-            departmentService.save(department);
+            departmentRepository.save(department);
             isUnassigned = true;
         } catch(final Exception e) {
             log.error(e.getMessage());
@@ -166,15 +179,15 @@ public class TransactionalOperations {
     public Card createCard(Board board, Card card, CardLog cardLog) {
         log.debug("TransactionalOperations--createCard--IN");
 
-        cardLog = cardLogService.save(cardLog);
+        cardLog = cardLogRepository.save(cardLog);
         card.addLog(cardLog);
         log.debug("TransactionalOperations--createCard--cardLog: {}", cardLog);
 
-        card = cardService.save(card);
+        card = cardRepository.save(card);
         log.debug("TransactionalOperations--createCard--card: {}", card);
 
         board.addCard(card);
-        board = boardService.createBoard(board);
+        board = boardRepository.save(board);
         log.debug("TransactionalOperations--createCard--board: {}", board);
         log.debug("TransactionalOperations--createCard--OUT");
 
@@ -185,8 +198,8 @@ public class TransactionalOperations {
     public Card createCardComment(Card card, Comment comment, CardLog cardLog) {
         log.debug("TransactionalOperations--createCardComment--IN");
 
-        comment = commentService.save(comment);
-        cardLog = cardLogService.save(cardLog);
+        comment = commentRepository.save(comment);
+        cardLog = cardLogRepository.save(cardLog);
 
         card.addComment(comment);
         card.addLog(cardLog);
@@ -194,7 +207,7 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--createCardComment--comment: {}", comment);
         log.debug("TransactionalOperations--createCardComment--cardLog: {}", cardLog);
 
-        card = cardService.save(card);
+        card = cardRepository.save(card);
 
         log.debug("TransactionalOperations--createCardComment--card: {}", card);
         log.debug("TransactionalOperations--createCardComment--OUT");
@@ -203,10 +216,10 @@ public class TransactionalOperations {
     }
 
     @Transactional
-    public Card changeCardStatus(Card card, CardLog cardLog, String status) {
+    public Card changeCardStatus(Card card, CardLog cardLog, CardStatusEnum status) {
         log.debug("TransactionalOperations--changeCardStatus--IN");
 
-        cardLog = cardLogService.save(cardLog);
+        cardLog = cardLogRepository.save(cardLog);
 
         card.setStatus(status);
         card.addLog(cardLog);
@@ -214,7 +227,7 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--changeCardStatus--status: {}", status);
         log.debug("TransactionalOperations--changeCardStatus--cardLog: {}", cardLog);
 
-        card = cardService.save(card);
+        card = cardRepository.save(card);
 
         log.debug("TransactionalOperations--changeCardStatus--card: {}", card);
         log.debug("TransactionalOperations--changeCardStatus--OUT");
@@ -226,9 +239,9 @@ public class TransactionalOperations {
     public Card updateCard(Card card, CardLog cardLog) {
         log.debug("TransactionalOperations--updateCard--IN");
 
-        cardLog = cardLogService.save(cardLog);
+        cardLog = cardLogRepository.save(cardLog);
         card.addLog(cardLog);
-        card = cardService.save(card);
+        card = cardRepository.save(card);
 
         log.debug("TransactionalOperations--updateCard--cardLog: {}", cardLog);
         log.debug("TransactionalOperations--updateCard--card: {}", card);
@@ -240,9 +253,9 @@ public class TransactionalOperations {
     public Card assignCard(Card card, CardLog cardLog) {
         log.debug("TransactionalOperations--assignCard--IN");
 
-        cardLog = cardLogService.save(cardLog);
+        cardLog = cardLogRepository.save(cardLog);
         card.addLog(cardLog);
-        card = cardService.save(card);
+        card = cardRepository.save(card);
 
         log.debug("TransactionalOperations--assignCard--cardLog: {}", cardLog);
         log.debug("TransactionalOperations--assignCard--card: {}", card);
@@ -254,9 +267,9 @@ public class TransactionalOperations {
     public Card unassignCard(Card card, CardLog cardLog) {
         log.debug("TransactionalOperations--unassignCard--IN");
 
-        cardLog = cardLogService.save(cardLog);
+        cardLog = cardLogRepository.save(cardLog);
         card.addLog(cardLog);
-        card = cardService.save(card);
+        card = cardRepository.save(card);
 
         log.debug("TransactionalOperations--unassignCard--cardLog: {}", cardLog);
         log.debug("TransactionalOperations--unassignCard--card: {}", card);
