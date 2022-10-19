@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import ro.dev.trellteam.domain.Employee;
 import ro.dev.trellteam.web.dto.EmployeeDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EmployeeMapper {
     Employee dtoToDomain(EmployeeDto employeeDto);
     EmployeeDto domainToDto(Employee employee);

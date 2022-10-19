@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import ro.dev.trellteam.domain.Role;
 import ro.dev.trellteam.web.dto.RoleDto;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface RoleMapper {
     Role dtoToDomain(RoleDto roleDto);
     RoleDto domainToDto(Role role);
