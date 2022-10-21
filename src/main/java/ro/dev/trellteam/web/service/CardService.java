@@ -13,9 +13,7 @@ import ro.dev.trellteam.enums.CardStatusEnum;
 import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.helper.GeneralHelper;
 import ro.dev.trellteam.web.dto.CardDto;
-import ro.dev.trellteam.web.mapper.AccountMapperImpl;
 import ro.dev.trellteam.web.mapper.CardMapperImpl;
-import ro.dev.trellteam.web.mapper.TypeMapperImpl;
 import ro.dev.trellteam.web.repository.AccountRepository;
 import ro.dev.trellteam.web.repository.BoardRepository;
 import ro.dev.trellteam.web.repository.CardRepository;
@@ -47,8 +45,6 @@ public class CardService {
 
     // Mappers
     private final CardMapperImpl cardMapper;
-    private final AccountMapperImpl accountMapper;
-    private final TypeMapperImpl typeMapper;
 
     public CardDto createTicket(final CreateCardRequest request) {
         log.debug("CardService::createTicket: {}", request);
