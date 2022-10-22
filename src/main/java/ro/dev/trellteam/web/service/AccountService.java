@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.helper.SecurityHelper;
 import ro.dev.trellteam.domain.Account;
 import ro.dev.trellteam.domain.Role;
@@ -91,7 +92,13 @@ public class AccountService implements UserDetailsService {
     public Account getAccount(final String username) {
         log.info("AccountService--getAccount--IN");
         log.info("AccountService--getAccount--username: {}", username);
-        final Account account = accRepo.findByUsername(username);
+        Account account = null;
+        try {
+            account = accRepo.findByUsername(username);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_3");
+        }
         log.info("AccountService--getAccount--OUT");
         return account;
     }

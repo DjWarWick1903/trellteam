@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.dev.trellteam.domain.Type;
+import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.web.repository.TypeRepository;
 
 import javax.transaction.Transactional;
@@ -56,7 +57,13 @@ public class TypeService {
     public Type findById(final Long id) {
         log.debug("TypeService--findById--IN");
 
-        final Type type = typeRepository.findById(id).get();
+        Type type = null;
+        try {
+            type = typeRepository.findById(id).get();
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_1");
+        }
 
         log.debug("TypeService--findById--type: {}", type.toString());
         log.debug("TypeService--findById--OUT");

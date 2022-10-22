@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.dev.trellteam.domain.Board;
+import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.web.repository.BoardRepository;
 
 import javax.transaction.Transactional;
@@ -78,7 +79,13 @@ public class BoardService {
     public Board getBoardById(Long id) {
         log.debug("BoardService--getBoardById--IN");
 
-        final Board board = boardRepository.findById(id).get();
+        Board board = null;
+        try {
+            board = boardRepository.findById(id).get();
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_4");
+        }
 
         log.debug("BoardService--getBoardById--board: {}", board.toString());
         log.debug("BoardService--getBoardById--OUT");

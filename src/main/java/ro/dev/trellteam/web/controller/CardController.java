@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.dev.trellteam.domain.Card;
 import ro.dev.trellteam.domain.Comment;
+import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.web.dto.CardDto;
 import ro.dev.trellteam.web.mapper.CardMapper;
 import ro.dev.trellteam.web.request.card.AddCardCommentRequest;
