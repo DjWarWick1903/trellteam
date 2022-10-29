@@ -17,5 +17,9 @@ public class ErrorHelper {
         errorList.put("TRELL_ERR_2", "Card was not found.");
         errorList.put("TRELL_ERR_3", "Account was not found.");
         errorList.put("TRELL_ERR_4", "Board was not found.");
+        errorList.put("TRELL_ERR_5", "Department was not found.");
+        errorList.put("TRELL_ERR_6", "Organisation was not found.");
+        errorList.put("TRELL_ERR_7", "Department could not be deleted.");
+        errorList.put("TRELL_ERR_8", "Request data not valid");
     }
 }

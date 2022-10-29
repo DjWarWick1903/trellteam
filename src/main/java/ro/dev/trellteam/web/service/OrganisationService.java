@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.dev.trellteam.domain.Organisation;
+import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.web.repository.OrganisationRepository;
 
 import javax.transaction.Transactional;
@@ -23,7 +24,15 @@ public class OrganisationService {
     public Organisation findByName(final String name) {
         log.debug("OrganisationService--findByName--IN");
         log.debug("OrganisationService--findByName--name: {}", name);
-        final Organisation organisation = organisationRepository.findByName(name);
+
+        Organisation organisation = null;
+        try {
+            organisation = organisationRepository.findByName(name);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_6");
+        }
+
         log.debug("OrganisationService--findByName--organisation: {}", organisation);
         log.debug("OrganisationService--findByName--OUT");
         return organisation;
@@ -37,7 +46,15 @@ public class OrganisationService {
     public Organisation findByDepartmentId(final Long id) {
         log.debug("OrganisationService--findByDepartmentId--IN");
         log.debug("OrganisationService--findByDepartmentId--id: {}", id);
-        final Organisation organisation = organisationRepository.findByDepartmentId(id);
+
+        Organisation organisation = null;
+        try {
+            organisation = organisationRepository.findByDepartmentId(id);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_6");
+        }
+
         log.debug("OrganisationService--findByDepartmentId--organisation: {}", organisation);
         log.debug("OrganisationService--findByDepartmentId--OUT");
         return organisation;
@@ -51,7 +68,15 @@ public class OrganisationService {
     public Organisation findById(final Long id) {
         log.debug("OrganisationService--findById--IN");
         log.debug("OrganisationService--findById--id: {}", id);
-        final Organisation organisation = organisationRepository.findById(id).get();
+
+        Organisation organisation = null;
+        try {
+            organisation = organisationRepository.findById(id).get();
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_6");
+        }
+
         log.debug("OrganisationService--findById--organisation: {}", organisation);
         log.debug("OrganisationService--findById--OUT");
 
