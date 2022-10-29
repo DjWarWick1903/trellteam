@@ -19,7 +19,7 @@ public class BoardDto {
     private Long id;
 
     @JsonProperty("title")
-    @NotNull(message = "Board title must be declared.")
+    @NotNull(message = "TRELL_ERR_8")
     private String title;
 
     @JsonProperty("dateCreated")
@@ -27,16 +27,16 @@ public class BoardDto {
     private Date dateCreated;
 
     @JsonProperty("departmentId")
-    @NotNull(message = "Department ID must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     private Long idDep;
 
     @JsonProperty("version")
-    @NotNull(message = "Board version must be declared.")
+    @NotNull(message = "TRELL_ERR_8")
     private String version;
 
     @JsonProperty("releaseDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @NotNull(message = "Release date must be declared.")
+    @NotNull(message = "TRELL_ERR_8")
     private Date release;
 
     @JsonProperty("cards")

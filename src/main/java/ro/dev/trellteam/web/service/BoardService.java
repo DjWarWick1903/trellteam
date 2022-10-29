@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ro.dev.trellteam.domain.Board;
 import ro.dev.trellteam.exceptions.TrellGenericException;
+import ro.dev.trellteam.web.dto.BoardDto;
+import ro.dev.trellteam.web.mapper.BoardMapper;
 import ro.dev.trellteam.web.repository.BoardRepository;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -16,6 +19,15 @@ import java.util.List;
 @Transactional
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final BoardMapper boardMapper;
+
+    public BoardDto createBoard(BoardDto request) {
+        log.debug("BoardService--createBoard--request: {}", request);
+        Board board = boardMapper.dtoToDomain(request);
+        board.setDateCreated(new java.sql.Date((new Date()).getTime()));
+        board = createBoard(board);
+        return boardMapper.domainToDto(board);
+    }
 
     /**
      * Method to get a list of boards starting from a department id.
