@@ -25,7 +25,6 @@ import ro.dev.trellteam.web.repository.EmployeeRepository;
 import ro.dev.trellteam.web.repository.OrganisationRepository;
 import ro.dev.trellteam.web.repository.RoleRepository;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j

@@ -14,24 +14,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ro.dev.trellteam.domain.Department;
-import ro.dev.trellteam.domain.Employee;
-import ro.dev.trellteam.domain.Organisation;
 import ro.dev.trellteam.exceptions.TrellGenericException;
-import ro.dev.trellteam.web.dto.DepartmentDto;
 import ro.dev.trellteam.web.mapper.DepartmentMapper;
 import ro.dev.trellteam.web.request.department.CreateDepartmentRequest;
 import ro.dev.trellteam.web.request.department.DeleteDepartmentRequest;
 import ro.dev.trellteam.web.request.department.UpdateDepartmentRequest;
 import ro.dev.trellteam.web.response.ObjectResponse;
-import ro.dev.trellteam.web.service.TransactionalOperations;
 import ro.dev.trellteam.web.service.DepartmentService;
-import ro.dev.trellteam.web.service.EmployeeService;
-import ro.dev.trellteam.web.service.OrganisationService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Map;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 

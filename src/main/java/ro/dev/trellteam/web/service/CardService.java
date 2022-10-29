@@ -24,7 +24,6 @@ import ro.dev.trellteam.web.request.card.UpdateCardStatusRequest;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

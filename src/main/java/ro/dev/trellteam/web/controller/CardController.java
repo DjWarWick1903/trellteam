@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ro.dev.trellteam.domain.Card;
-import ro.dev.trellteam.domain.Comment;
 import ro.dev.trellteam.exceptions.TrellGenericException;
 import ro.dev.trellteam.web.dto.CardDto;
 import ro.dev.trellteam.web.mapper.CardMapper;
@@ -27,7 +25,6 @@ import ro.dev.trellteam.web.service.CardService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
