@@ -2,35 +2,107 @@ package ro.dev.trellteam.web.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ro.dev.trellteam.domain.Employee;
-import ro.dev.trellteam.domain.Organisation;
+import ro.dev.trellteam.domain.*;
+import ro.dev.trellteam.exceptions.TrellGenericException;
+import ro.dev.trellteam.helper.GeneralHelper;
+import ro.dev.trellteam.web.dto.AccountDto;
+import ro.dev.trellteam.web.dto.DepartmentDto;
+import ro.dev.trellteam.web.dto.EmployeeDto;
+import ro.dev.trellteam.web.mapper.AccountMapper;
+import ro.dev.trellteam.web.mapper.DepartmentMapper;
+import ro.dev.trellteam.web.mapper.EmployeeMapper;
 import ro.dev.trellteam.web.repository.EmployeeRepository;
+import ro.dev.trellteam.web.request.employee.AssignEmployeeRequest;
+import ro.dev.trellteam.web.request.employee.CreateEmployeeRequest;
 
 import javax.transaction.Transactional;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class EmployeeService {
+    private final TransactionalOperations transactionalOperations;
     private final EmployeeRepository employeeRepository;
     private final OrganisationService organisationService;
+    private final DepartmentService departmentService;
+    private final EmployeeMapper employeeMapper;
+    private final AccountMapper accountMapper;
+    private final DepartmentMapper departmentMapper;
+    private final RoleService roleService;
+
+    public DepartmentDto unassignEmployeeToDepartment(final AssignEmployeeRequest request) {
+        log.debug("EmployeeService--unassignEmployeeToDepartment--request: {}", request);
+
+        final Employee employee = findById(request.getIdEmployee());
+        final Organisation organisation = organisationService.findById(request.getIdOrganisation());
+        final Set<Department> departments = organisation.getDepartments();
+
+        Department department = null;
+        for(final Department dep : departments) {
+            if(dep.getName().equals(request.getDepartmentName())) {
+                department = dep;
+                break;
+            }
+        }
+
+        if(department != null) {
+            return departmentMapper.domainToDto(transactionalOperations.unassignEmployeeFromDepartment(employee, department));
+        }
+        throw new TrellGenericException("TRELL_ERR_9");
+    }
+
+    public DepartmentDto assignEmployeeToDepartment(final AssignEmployeeRequest request) {
+        log.debug("EmployeeService--assignEmployeeToDepartment--request: {}", request);
+        final Employee employee = findById(request.getIdEmployee());
+        final Organisation organisation = organisationService.findById(request.getIdOrganisation());
+        final Set<Department> departments = organisation.getDepartments();
+
+        Department department = null;
+        for(final Department dep : departments) {
+            if(dep.getName().equals(request.getDepartmentName())) {
+                department = dep;
+                break;
+            }
+        }
+
+        if(department != null) {
+            return departmentMapper.domainToDto(transactionalOperations.assignEmployeeToDepartment(employee, department));
+        }
+        throw new TrellGenericException("TRELL_ERR_9");
+    }
+
+    public AccountDto createEmployee(final CreateEmployeeRequest request) {
+        log.debug("EmployeeService--createEmployee--request: {}", request);
+        Account account = accountMapper.dtoToDomain(request.getAccount());
+
+        final Role role = roleService.findById(request.getIdRole());
+        account.addRole(role);
+
+        Department department = departmentService.findById(request.getIdDepartment());
+
+        account = transactionalOperations.createEmployee(account, account.getEmployee(), department);
+        return accountMapper.domainToDto(account);
+    }
 
     /**
      * Method used to return a list of employees of an organisation.
      * @param idOrg
      * @return List<Employee>
      */
-    public Set<Employee> listOrganisationEmployees(final Long idOrg) {
-        log.debug("EmployeeService--listOrganisationEmployees--IN");
+    public Set<EmployeeDto> listOrganisationEmployees(final Long idOrg) {
         log.debug("EmployeeService--listOrganisationEmployees--idOrg: {}", idOrg);
         final Organisation organisation = organisationService.findById(idOrg);
         final Set<Employee> employees = organisation.getEmployees();
-        log.debug("EmployeeService--listOrganisationEmployees--employees: {}", employees);
-        log.debug("EmployeeService--listOrganisationEmployees--OUT");
-        return employees;
+
+        return employees.stream()
+                .map(e -> employeeMapper.domainToDto(e))
+                .collect(Collectors.toSet());
     }
 
     /**

@@ -66,7 +66,7 @@ public class TransactionalOperations {
     }
 
     @Transactional
-    public void createEmployee(Account account, Employee employee, Department department) {
+    public Account createEmployee(Account account, Employee employee, Department department) {
         log.debug("TransactionalOperations--createEmployee--IN");
 
         employee = employeeRepository.save(employee);
@@ -86,7 +86,7 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--createEmployee--employee: {}", employee.toString());
         log.debug("TransactionalOperations--createEmployee--account: {}", account.toString());
         log.debug("TransactionalOperations--createEmployee--department: {}", department.toString());
-        log.debug("TransactionalOperations--createEmployee--OUT");
+        return account;
     }
 
     @Transactional

@@ -21,5 +21,6 @@ public class ErrorHelper {
         errorList.put("TRELL_ERR_6", "Organisation was not found.");
         errorList.put("TRELL_ERR_7", "Department could not be deleted.");
         errorList.put("TRELL_ERR_8", "Request data not valid");
+        errorList.put("TRELL_ERR_9", "Employee could not be assigned to the department.");
     }
 }
