@@ -13,16 +13,16 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 public class CreateCardRequest {
-    @NotNull(message = "The ID of the board must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("boardId")
     private Long boardId;
 
-    @NotNull(message = "The ID of the card type must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("typeId")
     private Long typeId;
 
     @Valid
-    @NotNull(message = "Card details must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("card")
     private CardDto card;
 }

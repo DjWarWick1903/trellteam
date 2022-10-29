@@ -12,16 +12,16 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 public class AddCardCommentRequest {
-    @NotNull(message = "The ID of the card must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("id")
     private Long cardId;
 
-    @NotNull(message = "The username of user which requests the card status change must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("username")
     private String username;
 
-    @NotNull(message = "The comment must be specified.")
-    @NotEmpty(message = "The comment cannot be empty.")
+    @NotNull(message = "TRELL_ERR_8")
+    @NotEmpty(message = "TRELL_ERR_8")
     @JsonProperty("comment")
     private String comment;
 }

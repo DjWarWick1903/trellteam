@@ -11,11 +11,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 public class UpdateCardStatusRequest {
-    @NotNull(message = "The ID of the card must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("id")
     private Long cardId;
 
-    @NotNull(message = "The username of user which requests the card status change must be specified.")
+    @NotNull(message = "TRELL_ERR_8")
     @JsonProperty("username")
     private String username;
 }
