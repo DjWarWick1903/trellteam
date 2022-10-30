@@ -3,18 +3,67 @@ package ro.dev.trellteam.web.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ro.dev.trellteam.domain.Organisation;
+import ro.dev.trellteam.domain.*;
 import ro.dev.trellteam.exceptions.TrellGenericException;
+import ro.dev.trellteam.web.dto.OrganisationDto;
+import ro.dev.trellteam.web.dto.TypeDto;
+import ro.dev.trellteam.web.mapper.AccountMapper;
+import ro.dev.trellteam.web.mapper.OrganisationMapper;
+import ro.dev.trellteam.web.mapper.TypeMapper;
 import ro.dev.trellteam.web.repository.OrganisationRepository;
+import ro.dev.trellteam.web.request.organisation.RegisterOrganisationRequest;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class OrganisationService {
+    private final TransactionalOperations transactionalOperations;
     private final OrganisationRepository organisationRepository;
+    private final AccountService accountService;
+    private final DepartmentService departmentService;
+    private final TypeService typeService;
+    private final OrganisationMapper organisationMapper;
+    private final AccountMapper accountMapper;
+    private final TypeMapper typeMapper;
+
+    public List<TypeDto> getOrganisationTypes(final Long idOrganisation) {
+        log.debug("OrganisationService--getOrganisationTypes--idOrganisation: {}", idOrganisation);
+        final List<Type> types = typeService.listTypesByOrganisation(idOrganisation);
+        return types.stream()
+                .map(t -> typeMapper.domainToDto(t))
+                .collect(Collectors.toList());
+    }
+
+    public TypeDto createType(TypeDto request) {
+        log.debug("OrganisationService--createType--request: {}", request);
+        Type type = typeMapper.dtoToDomain(request);
+        type = typeService.save(type);
+
+        return typeMapper.domainToDto(type);
+    }
+
+    public OrganisationDto getUserOrganisation(final String username) {
+        log.debug("OrganisationService--getUserOrganisation--username: {}", username);
+        final Account account = accountService.getAccount(username);
+        final List<Department> departments = departmentService.findByEmployeeId(account.getEmployee().getId());
+        final Organisation organisation = findByDepartmentId(departments.get(0).getId());
+
+        return organisationMapper.domainToDto(organisation);
+    }
+
+    public OrganisationDto registerOrganisation(final RegisterOrganisationRequest request) {
+        log.debug("OrganisationService--registerOrganisation--request: {}", request);
+        Organisation organisation = organisationMapper.dtoToDomain(request.getOrganisationDto());
+        Account account = accountMapper.dtoToDomain(request.getAccountDto());
+        Department department = new Department(null, request.getDepartmentName(), null, null);
+
+        return organisationMapper.domainToDto(transactionalOperations.createOrganisationRepository(organisation, department, account.getEmployee(), account));
+    }
 
     /**
      * Method used to return the organisation starting from a provided name.

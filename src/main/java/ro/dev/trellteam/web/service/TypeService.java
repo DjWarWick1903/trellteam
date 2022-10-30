@@ -41,7 +41,13 @@ public class TypeService {
     public List<Type> listTypesByOrganisation(final Long idOrganisation) {
         log.debug("TypeService--listTypesByOrganisation--IN");
 
-        final List<Type> types = typeRepository.findByIdOrganisation(idOrganisation);
+        List<Type> types = null;
+        try {
+            types = typeRepository.findByIdOrganisation(idOrganisation);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_1");
+        }
 
         log.debug("TypeService--listTypesByOrganisation--type count: {}", types.size());
         log.debug("TypeService--listTypesByOrganisation--OUT");

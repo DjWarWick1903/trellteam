@@ -15,6 +15,7 @@ import ro.dev.trellteam.domain.Employee;
 import ro.dev.trellteam.domain.Organisation;
 import ro.dev.trellteam.domain.Role;
 import ro.dev.trellteam.enums.CardStatusEnum;
+import ro.dev.trellteam.web.dto.OrganisationDto;
 import ro.dev.trellteam.web.repository.AccountRepository;
 import ro.dev.trellteam.web.repository.BoardRepository;
 import ro.dev.trellteam.web.repository.CardLogRepository;
@@ -41,7 +42,7 @@ public class TransactionalOperations {
     private final CommentRepository commentRepository;
 
     @Transactional
-    public void createOrganisationRepository(Organisation organisation, Department department, Employee employee, Account account) {
+    public Organisation createOrganisationRepository(Organisation organisation, Department department, Employee employee, Account account) {
         log.debug("TransactionalOperations--createOrganisationRepository--IN");
         employee = employeeRepository.saveAndFlush(employee);
 
@@ -62,7 +63,7 @@ public class TransactionalOperations {
         log.debug("TransactionalOperations--createOrganisationRepository--employee: {}", employee.toString());
         log.debug("TransactionalOperations--createOrganisationRepository--account: {}", account.toString());
 
-        log.debug("TransactionalOperations--createOrganisationRepository--OUT");
+        return organisation;
     }
 
     @Transactional
