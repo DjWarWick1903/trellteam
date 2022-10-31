@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class ObjectResponse extends Response {
-    private Object objectDto;
+    private Object response;
 }
