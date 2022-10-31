@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ro.dev.trellteam.model.Role;
-import ro.dev.trellteam.service.RoleService;
+import ro.dev.trellteam.domain.Role;
+import ro.dev.trellteam.web.service.RoleService;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class RoleUnitTest {
     public void findByName() {
         Role role = roleService.findByName("ADMIN");
 
-        Assert.assertEquals(role.getId(), new Long(1));
+        Assert.assertEquals(role.getId(), Long.valueOf(1));
     }
 
     @Test

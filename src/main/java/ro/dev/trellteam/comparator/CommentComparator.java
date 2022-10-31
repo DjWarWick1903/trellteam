@@ -1,6 +1,6 @@
 package ro.dev.trellteam.comparator;
 
-import ro.dev.trellteam.model.Comment;
+import ro.dev.trellteam.domain.Comment;
 
 import java.util.Comparator;
 
