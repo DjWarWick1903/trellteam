@@ -25,7 +25,6 @@ public class OrganisationService {
     private final TransactionalOperations transactionalOperations;
     private final OrganisationRepository organisationRepository;
     private final AccountService accountService;
-    private final DepartmentService departmentService;
     private final TypeService typeService;
     private final OrganisationMapper organisationMapper;
     private final AccountMapper accountMapper;
@@ -50,8 +49,7 @@ public class OrganisationService {
     public OrganisationDto getUserOrganisation(final String username) {
         log.debug("OrganisationService--getUserOrganisation--username: {}", username);
         final Account account = accountService.getAccount(username);
-        final List<Department> departments = departmentService.findByEmployeeId(account.getEmployee().getId());
-        final Organisation organisation = findByDepartmentId(departments.get(0).getId());
+        final Organisation organisation = findByEmployeeId(account.getEmployee().getId());
 
         return organisationMapper.domainToDto(organisation);
     }
@@ -106,6 +104,23 @@ public class OrganisationService {
 
         log.debug("OrganisationService--findByDepartmentId--organisation: {}", organisation);
         log.debug("OrganisationService--findByDepartmentId--OUT");
+        return organisation;
+    }
+
+    public Organisation findByEmployeeId(final Long id) {
+        log.debug("OrganisationService--findByEmployeeId--IN");
+        log.debug("OrganisationService--findByEmployeeId--id: {}", id);
+
+        Organisation organisation = null;
+        try {
+            organisation = organisationRepository.findByEmployeeId(id);
+        } catch(Exception e) {
+            log.error(e.getMessage());
+            throw new TrellGenericException("TRELL_ERR_6");
+        }
+
+        log.debug("OrganisationService--findByEmployeeId--organisation: {}", organisation);
+        log.debug("OrganisationService--findByEmployeeId--OUT");
         return organisation;
     }
 

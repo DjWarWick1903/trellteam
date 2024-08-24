@@ -30,7 +30,6 @@ public class EmployeeService {
     private final TransactionalOperations transactionalOperations;
     private final EmployeeRepository employeeRepository;
     private final OrganisationService organisationService;
-    private final DepartmentService departmentService;
     private final EmployeeMapper employeeMapper;
     private final AccountMapper accountMapper;
     private final DepartmentMapper departmentMapper;
@@ -77,14 +76,12 @@ public class EmployeeService {
         throw new TrellGenericException("TRELL_ERR_9");
     }
 
-    public AccountDto createEmployee(final CreateEmployeeRequest request) {
+    public AccountDto createEmployee(final CreateEmployeeRequest request, final Department department) {
         log.debug("EmployeeService--createEmployee--request: {}", request);
         Account account = accountMapper.dtoToDomain(request.getAccount());
 
         final Role role = roleService.findById(request.getIdRole());
         account.addRole(role);
-
-        Department department = departmentService.findById(request.getIdDepartment());
 
         account = transactionalOperations.createEmployee(account, account.getEmployee(), department);
         return accountMapper.domainToDto(account);

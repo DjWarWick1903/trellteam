@@ -44,6 +44,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class EmployeesController {
     private final EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
     @GetMapping("/organisation/{idOrg}")
     public ResponseEntity<ObjectResponse> getOrganisationEmployees(@PathVariable Long idOrg) {
@@ -62,7 +63,8 @@ public class EmployeesController {
         log.debug("EmployeesController--createEmployee--IN");
         final URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/employee/v1/main").toUriString());
 
-        final AccountDto account = employeeService.createEmployee(payload);
+        final Department department = departmentService.findById(payload.getIdDepartment());
+        final AccountDto account = employeeService.createEmployee(payload, department);
         final ObjectResponse response = new ObjectResponse(account);
         return ResponseEntity.created(uri).body(response);
     }

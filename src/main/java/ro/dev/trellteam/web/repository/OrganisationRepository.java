@@ -15,6 +15,8 @@ public interface OrganisationRepository extends JpaRepository<Organisation, Long
     @Query("SELECT o FROM ORGANISATION o, IN(o.departments) d WHERE d.id = :id")
     Organisation findByDepartmentId(@Param("id") Long id);
     Optional<Organisation> findById(Long id);
+    @Query("SELECT o FROM ORGANISATION o, IN(o.employees) e WHERE e.id = :id")
+    Organisation findByEmployeeId(@Param("id") Long id);
 
     Organisation save(Organisation organisation);
 
